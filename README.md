@@ -1,0 +1,2 @@
+# JCLib
+Java Chess Library
