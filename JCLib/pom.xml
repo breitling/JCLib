@@ -1,13 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.breitling</groupId>
-    <artifactId>JCLlib-parent-pom</artifactId>
-    <version>1.0.0</version>
-  </parent>
-  <groupId>com.breitling</groupId>
-  <artifactId>jclib</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>JCLib</name>
-  <description>Java Chess Library</description>
+    <modelVersion>4.0.0</modelVersion>
+  
+    <parent>
+       <groupId>com.breitling</groupId>
+       <artifactId>JCLlib-parent-pom</artifactId>
+       <version>1.0.0</version>
+    </parent>
+  
+    <artifactId>jclib</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>JCLib</name>
+    <description>Java Chess Library</description>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
