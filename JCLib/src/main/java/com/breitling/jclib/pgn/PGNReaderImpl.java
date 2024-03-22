@@ -202,22 +202,22 @@ public class PGNReaderImpl implements PGNReader
     {
     	String [] tokens = line.split("\"");
     	
-    	var tag = tokens[0].substring(1);
+    	var tag = tokens[0].substring(1).trim();
     	var value = tokens[1].substring(0, tokens[1].length());
     	
     	try
     	{
 	    	switch(tag)
 	    	{
-	    	case "Event ":
+	    	case "Event":
 	    		 g.setEvent(value);
 	    		 break;
 	    		 
-	    	case "Site ":
+	    	case "Site":
 	    		 g.setSite(value);
 	    		 break;
 	    		 
-	    	case "Round ":
+	    	case "Round":
 	    		 var parts = value.split("[.,]");
 	    		 if (parts[0].matches("\\d"))
 	    			 g.setRound(Integer.valueOf(parts[0]));
@@ -225,36 +225,40 @@ public class PGNReaderImpl implements PGNReader
 	    			 g.setRound(0);
 	    		 break;
 	    	
-	    	case "Result ":
+	    	case "Result":
 	    		 g.setResult(Result.valueOfResult(value));
 	    		 break;
 	    		 
-	    	case "EventDate ":
+	    	case "EventDate":
 	    		 g.setEventDate(Factory.DateUtils.stringToDate(value));
 	    		 break;
 	    		 
-	    	case "Date ":
+	    	case "Date":
 	    		 g.setDate(Factory.DateUtils.stringToDate(value));
 	    		 break;
 	    		 
-	    	case "White ":
+	    	case "White":
 	    		 g.setWhite(value);
 	    		 break;
 	    		 
-	    	case "WhiteELO ":
+	    	case "WhiteElo":
 	    		 g.setWhiteELO(value);
 	    		 break;
 	    	
-	    	case "Black ":
+	    	case "Black":
 	    		 g.setBlack(value);
 	    		 break;
 	    		 
-	    	case "Black ELO ":
+	    	case "BlackElo":
 	    		 g.setBlackELO(value);
 	    		 break;
 	    		 
-	    	case "ECO ":
+	    	case "ECO":
 	    		 g.setEco(value);
+	    		 break;
+	    		 
+	    	default:
+	    		 LOG.error("Unknown tag {} with value {}", tag, value);
 	    		 break;
 	    	}
     	}
