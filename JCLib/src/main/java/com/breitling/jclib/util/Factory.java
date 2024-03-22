@@ -15,6 +15,11 @@ public class Factory
 	{
 		public static class Game
 		{
+			public static com.breitling.jclib.persistence.Game create()
+			{
+				return new com.breitling.jclib.persistence.Game();
+			}
+			
 			public static com.breitling.jclib.persistence.Game create(String w, String b, Result r, String moves) 
 			{
 				var g = new com.breitling.jclib.persistence.Game();
@@ -47,6 +52,18 @@ public class Factory
 			private Position() {};
 		}
 		
+		public static class Source
+		{
+			public static com.breitling.jclib.persistence.Source create(String path)
+			{
+				var s = new com.breitling.jclib.persistence.Source();
+				
+				s.setPath(path);
+				
+				return s;
+			}
+		}
+		
 		private Persistence() {};
 	}
 	
@@ -57,17 +74,17 @@ public class Factory
 	
 	public static class DateUtils
 	{
-		private static final SimpleDateFormat sdf = new SimpleDateFormat("YYYY.MM.dd");
+		private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
 		
-		public static Timestamp stringToGameDate(String d)
+		public static Date stringToDate(String d)
 		{
 			try
 			{
-				return new Timestamp(sdf.parse(d).getTime());
+				return new Date(sdf.parse(d).getTime());
 			}
 			catch (Exception e)
 			{
-				return Timestamp.valueOf(LocalDateTime.now());
+				return Date.valueOf(LocalDate.now());
 			}
 		}
 		

@@ -23,6 +23,7 @@ import jakarta.persistence.Table;
 public class Game 
 {
 	private long id;
+	private long sourceId;
 	private String white;
 	private String whiteELO;
 	private String black;
@@ -51,6 +52,15 @@ public class Game
 		this.id = id;
 	}
 	
+	@Column(name="SOURCE_ID", nullable=false)
+	public long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(long source_id) {
+		this.sourceId = source_id;
+	}
+
 	@Column(name="WHITE", nullable=false)
 	public String getWhite() {
 		return white;
