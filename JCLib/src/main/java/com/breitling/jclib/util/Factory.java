@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.model.BitBoard;
 
 public class Factory 
 {

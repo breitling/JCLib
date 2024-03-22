@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.breitling.jclib.chess.Color;
+import com.breitling.jclib.chess.FEN;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.model.FEN;
 import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.persistence.Source;
 import com.breitling.jclib.util.Factory;

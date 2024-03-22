@@ -1,4 +1,4 @@
-package com.breitling.jclib.model;
+package com.breitling.jclib.chess;
 
 public class FEN 
 {

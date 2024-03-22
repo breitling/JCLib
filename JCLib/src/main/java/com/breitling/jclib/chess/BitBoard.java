@@ -1,9 +1,6 @@
-package com.breitling.jclib.model;
+package com.breitling.jclib.chess;
 
 import java.util.BitSet;
-
-import com.breitling.jclib.chess.Color;
-import com.breitling.jclib.chess.Piece;
 
 public class BitBoard 
 {
