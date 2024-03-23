@@ -174,15 +174,20 @@ public class BitBoard
 		int bitpos = 0;
 		BitSet bitboard = new BitSet(64);
 				
-		for (int i = len; i >= 0; i--) {
+		for (int i = len; i >= 0; i--) 
+		{
 		    byte c = bytes[i];
+		    
 		    if (c == 47)
 		        continue;
-		     if (c > 57) {
+		    
+		    if (c > 57) 
+		    {
 		        bitboard.set(bitpos);
 		        bitpos++;
 		    }
-		    else {
+		    else 
+		    {
 		        bitpos = bitpos + (c - 48);
 		    }
 		}

@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Result;

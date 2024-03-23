@@ -9,10 +9,18 @@ public enum Piece
 	
 	private Character piece;
 	private static final Map<Character,Piece> map = new HashMap<>();
+	private static final Map<Piece,String> nameMap = new HashMap<>();
 	
 	static {
 		for (Piece p : values())
 			map.put(p.piece, p);
+
+		nameMap.put(PAWN, "Pawn");
+		nameMap.put(KNIGHT, "Knight");
+		nameMap.put(BISHOP, "Bishop");
+		nameMap.put(ROOK, "Rook");
+		nameMap.put(QUEEN, "Queen");
+		nameMap.put(KING, "King");
 	}
 	
 	Piece(char p) 
@@ -27,5 +35,9 @@ public enum Piece
 	
 	public static Piece valueOfPiece(Character p) {
 		return map.get(p);
+	}
+	
+	public static String getName(Piece p) {
+		return nameMap.get(p);
 	}
 }
