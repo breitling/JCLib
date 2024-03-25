@@ -145,6 +145,6 @@ public class BoardTests
 		b.move("O-O");
 		b.move("0-0");
 		
-		assertEquals("r1bq1rk1/ppppbppp/2n2n2/4p2Q/2B1P3/5N2/PPPP1PPP/RNB2RK1 w - - 10 6", b.toFEN());
+		assertEquals("r1bq1rk1/ppppbppp/2n2n2/4p2Q/2B1P3/5N2/PPPP1PPP/RNB2RK1 w - - 6 6", b.toFEN());
 	}
 }

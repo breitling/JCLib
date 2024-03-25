@@ -118,7 +118,9 @@ public class PGNReaderTest
 	@Test
 	public void testGetMoveList_PGNWithVariations_List()
 	{
-		var reader = PGNReader.createReader("1. g4+ Kg5 2. Kg7 Kxg4 3. Kf6 Kf4 4. h4 ( 4. Ke6 Ke4 5. h4 Kf4 6. Kd5 Kg4 7. Kc6 Kxh4 8. Kxc7 ) 4... Kg4 5. Ke5 Kxh4 6. Kd5 Kg4 7. Kc6 Kf4 8. Kxc7 { Game is drawn by insufficient material} 1/2-1/2");
+		var reader = PGNReader.createReader("1. g4+ Kg5 2. Kg7 Kxg4 3. Kf6 Kf4 4. h4 ( 4. Ke6 Ke4 5. h4 Kf4 6. Kd5 Kg4 " +
+				                            "7. Kc6 Kxh4 8. Kxc7 ) 4... Kg4 5. Ke5 Kxh4 6. Kd5 Kg4 7. Kc6 Kf4 " +
+				                            "8. Kxc7 { Game is drawn by insufficient material} 1/2-1/2");
 		var moves = reader.getMoveList();
 		
 		assertNotNull(moves);
@@ -135,28 +137,28 @@ public class PGNReaderTest
 		
 		assertNotNull(games);
 		assertEquals(47, games.size());
-		
-		System.out.println(" ");
-		System.out.println("Found " + games.size() + " games.");
-		
-		int n = 1;
-		
-		for (Game g : games)
-		{
-			Board b = Board.create(g.getFEN());
-			reader = PGNReader.createReader(g.getMoves());
-			
-			var fens = reader.getFENsFromMoves(b);
-			
- 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
- 			System.out.println(" ");
-			
-			for (String f : fens)
-			{
-				System.out.println(f);
-			}
-			
- 			System.out.println("------------------------------------");
-		}
+//		
+//		System.out.println(" ");
+//		System.out.println("Found " + games.size() + " games.");
+//		
+//		int n = 1;
+//		
+//		for (Game g : games)
+//		{
+//			Board b = Board.create(g.getFEN());
+//			reader = PGNReader.createReader(g.getMoves());
+//			
+//			var fens = reader.getFENsFromMoves(b);
+//			
+// 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
+// 			System.out.println(" ");
+//			
+//			for (String f : fens)
+//			{
+//				System.out.println(f);
+//			}
+//			
+// 			System.out.println("------------------------------------");
+//		}
 	}
 }
