@@ -230,7 +230,7 @@ public class PGNReaderImpl implements PGNReader
 	    		 
 	    	case "Round":
 	    		 var parts = value.split("[.,]");
-	    		 if (parts[0].matches("\\d"))
+	    		 if (parts[0].matches("\\d+"))
 	    			 g.setRound(Integer.valueOf(parts[0]));
 	    		 else
 	    			 g.setRound(0);
