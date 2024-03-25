@@ -36,6 +36,7 @@ public class Game
 	private Date date;
 	private Result result;
 	private String eco;
+	private String fEN;
 	private int moveCount;
 	private String moves;
 	
@@ -168,6 +169,15 @@ public class Game
 	
 	public void setEco(String eco) {
 		this.eco = eco;
+	}
+	
+	@Column(name="FEN", nullable=true)	
+	public String getFEN() {
+		return fEN;
+	}
+	
+	public void setFEN(String fen) {
+		this.fEN = fen;
 	}
 	
 	@Column(name="MOVE_COUNT", nullable=false)	

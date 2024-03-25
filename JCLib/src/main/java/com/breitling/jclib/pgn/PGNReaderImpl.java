@@ -85,12 +85,18 @@ public class PGNReaderImpl implements PGNReader
     
     public List<String> getFENsFromMoves()
     {
+    	return getFENsFromMoves(Board.create());
+    }
+    
+    public List<String> getFENsFromMoves(Board b)
+    {
+    	var board = b;
+    	
         List<String> fens = new ArrayList<>();
         
         try
         {
             var list = parseMoves();
-            var board = Board.create();
             
             for (Move m : list)
             {
@@ -261,8 +267,12 @@ public class PGNReaderImpl implements PGNReader
 	    		 g.setEco(value);
 	    		 break;
 	    		 
+	    	case "FEN":
+	    		 g.setFEN(value);
+	    		 break;
+	    		 
 	    	default:
-	    		 LOG.error("Unknown tag {} with value {}", tag, value);
+	    		 LOG.error("Unknown tag '{}' with value {}", tag, value);
 	    		 break;
 	    	}
     	}

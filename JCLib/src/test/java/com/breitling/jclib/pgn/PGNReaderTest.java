@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
+import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Result;
+import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.util.Factory;
 
 public class PGNReaderTest 
@@ -111,5 +113,39 @@ public class PGNReaderTest
 		var games = reader.getGames();
 		
 		assertNotNull(games);
+	}
+	
+	@Test
+	public void testGetGames_PGNFileWithFENs_ListOfPositions() throws PGNException
+	{
+		var source = Factory.Persistence.Source.create("/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");
+		var reader = PGNReader.createReader(source);
+		var games = reader.getGames();
+		
+		assertNotNull(games);
+		assertEquals(47, games.size());
+		
+		System.out.println(" ");
+		System.out.println("Found " + games.size() + " games.");
+		
+		int n = 1;
+		
+		for (Game g : games)
+		{
+			Board b = Board.create(g.getFEN());
+			reader = PGNReader.createReader(g.getMoves());
+			
+			var fens = reader.getFENsFromMoves(b);
+			
+ 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN());
+ 			System.out.println(" ");
+			
+			for (String f : fens)
+			{
+				System.out.println(f);
+			}
+			
+ 			System.out.println("------------------------------------");
+		}
 	}
 }
