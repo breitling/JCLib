@@ -128,4 +128,23 @@ public class BoardTests
 		
 		assertEquals(FEN.STARTING_POSITION, b.toFEN());
 	}
+	
+	@Test
+	public void testMove_GoodMoves_FEN()
+	{
+		var b = Board.create();
+		
+		b.move("e2-e4");
+		b.move("e7e5");
+		b.move("Bc4");
+		b.move("b8c6");
+		b.move("Qd1-h5");
+		b.move("Nf6");
+		b.move("Nf3");
+		b.move("Be7");
+		b.move("O-O");
+		b.move("0-0");
+		
+		assertEquals("r1bq1rk1/ppppbppp/2n2n2/4p2Q/2B1P3/5N2/PPPP1PPP/RNB2RK1 w - - 10 6", b.toFEN());
+	}
 }

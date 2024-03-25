@@ -8,7 +8,7 @@ public class BitBoard
 	private static final int NUM_OF_FILES = 8;
 	private static final int NUM_OF_SQUARES = NUM_OF_RANKS * NUM_OF_FILES;
 	
-	private static final long [] bitOfSquare;
+	private static final long[] bitOfSquare = new long [NUM_OF_SQUARES];
 	
 //  PRECOMPUTED BIT BOARDS
     private static final long[] KNIGHT_ATTACKS       = new long[NUM_OF_SQUARES];
@@ -24,12 +24,10 @@ public class BitBoard
     
     static 
     {
-    	bitOfSquare = new long [NUM_OF_SQUARES];
-    	
     	for(int sqi = 0; sqi < NUM_OF_SQUARES; sqi++)
     		bitOfSquare[sqi] = 1L << sqi;
     	
-        for (int from = 0; from <= 63; from++) 
+        for (int from = 0; from < NUM_OF_SQUARES; from++) 
         {
             KNIGHT_ATTACKS[from] = 0L;
             BISHOP_ATTACKS[from] = 0L;
@@ -40,7 +38,7 @@ public class BitBoard
             WHITE_PAWN_ATTACKS[from] = 0L;
             BLACK_PAWN_ATTACKS[from] = 0L;
             
-            for (int to = 0; to <= 63; to++) 
+            for (int to = 0; to < NUM_OF_SQUARES; to++) 
             {
                 if (to != from) 
                 {
@@ -151,7 +149,7 @@ public class BitBoard
    		 	 break;
 
     	case KING:
-   		 	 b = (ROOK_ATTACKS[from] & OfSquare(to)) != 0;
+   		 	 b = (KING_ATTACKS[from] & OfSquare(to)) != 0;
    		 	 break;
    		 	 
    		default:
@@ -159,6 +157,65 @@ public class BitBoard
     	}
     	
     	return b;
+    }
+    
+    public static final long getColorPieceBitBoard(Color c, Piece p, int from)
+    {
+    	long board = 0L;
+    	
+    	switch(p)
+    	{
+    	case KNIGHT:
+    	case BISHOP:
+    	case ROOK:
+    	case QUEEN:
+    	case KING:
+    		 board = getPieceBitBoard(p, from);
+    		 break;
+    		 
+    	case PAWN:
+    	default:
+    		 if (c == Color.WHITE)
+    			 board = WHITE_PAWN_ATTACKS[from];
+    		 else
+    			 board = BLACK_PAWN_ATTACKS[from];
+    		 break;    	
+    	}
+    	
+    	return board;
+    }
+    
+    public static final long getPieceBitBoard(Piece p, int from)
+    {
+    	long board = 0L;
+    	
+    	switch(p)
+    	{
+    	case KNIGHT:
+    		 board = KNIGHT_ATTACKS[from];
+    		 break;
+    		
+    	case BISHOP:
+    		 board = BISHOP_ATTACKS[from];
+    		 break;
+    
+    	case ROOK:
+     		 board = ROOK_ATTACKS[from];
+    		 break;
+    		 
+    	case QUEEN:
+   		 	 board = QUEEN_ATTACKS[from];
+   		 	 break;
+
+    	case KING:
+   		 	 board = KING_ATTACKS[from];
+   		 	 break;
+   		 	 
+   		default:
+   			 break;
+    	}
+    	
+    	return board;
     }
     
 	public static long generateBitBoardHash(String fen)

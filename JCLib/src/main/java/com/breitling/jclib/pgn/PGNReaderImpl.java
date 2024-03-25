@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Color;
-import com.breitling.jclib.chess.FEN;
 import com.breitling.jclib.chess.Result;
 import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.persistence.Source;
@@ -90,18 +90,22 @@ public class PGNReaderImpl implements PGNReader
         try
         {
             var list = parseMoves();
-            var position = FEN.STARTING_POSITION;
+            var board = Board.create();
             
-            list.forEach(m -> 
+            for (Move m : list)
             {
             	if (m.getNumber() > 0)
             	{
-            		fens.add(position);
+            		board.move(m.whitemove);
+            		fens.add(board.toFEN());
             		
             		if (m.getBlackmove().length() > 0)
-            			fens.add(position);
+            		{
+            			board.move(m.blackmove);
+            			fens.add(board.toFEN());
+            		}
             	}
-            });
+            }
             
             return fens;
         }
