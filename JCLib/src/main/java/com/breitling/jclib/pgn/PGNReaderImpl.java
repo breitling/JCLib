@@ -273,7 +273,7 @@ public class PGNReaderImpl implements PGNReader
 	    		 break;
 	    		 
 	    	default:
-	    		 LOG.error("Unknown tag '{}' with value {}", tag, value);
+	    		 LOG.warn("Unknown tag '{}' with value {}", tag, value);
 	    		 break;
 	    	}
     	}
@@ -333,9 +333,13 @@ public class PGNReaderImpl implements PGNReader
     	{
     		do
     		{
-    			t = getNextToken();				// <numer>... 
+	    		do
+	    		{
+	    			t = getNextToken();				// <numer>... 
+	    		}
+	    		while(!(t.endsWith("}") || t.endsWith(")")));
     		}
-    		while(!(t.endsWith("}") || t.endsWith(")")));
+    		while (peekToken().startsWith(TOKEN_VARIATION));
         
 	        if (color == Color.WHITE)
 	        {

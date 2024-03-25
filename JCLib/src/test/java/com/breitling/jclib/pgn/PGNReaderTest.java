@@ -148,7 +148,7 @@ public class PGNReaderTest
 			
 			var fens = reader.getFENsFromMoves(b);
 			
- 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN());
+ 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
  			System.out.println(" ");
 			
 			for (String f : fens)
