@@ -14,4 +14,7 @@ public interface GameDAO extends CrudRepository<Game,Long>
 {
 	@Query("FROM Game WHERE white = :name OR black = :name")
 	public List<Game> findGamesByPlayerName(@Param("name") String name);
+	
+	@Query("SELECT g FROM Game g, Source s WHERE g.sourceId = s.id AND s.name = :source")
+	public List<Game> findGamesBySource(@Param("source") String source);
 }

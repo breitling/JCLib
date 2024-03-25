@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.breitling.jclib.persistence.Source;
 
 @Repository
-public interface ResourceDAO extends CrudRepository<Source,Long>
+public interface SourceDAO extends CrudRepository<Source,Long>
 {
 
 }

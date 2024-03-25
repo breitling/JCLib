@@ -18,7 +18,7 @@ import com.breitling.jclib.persistence.Game;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
-@Sql(scripts={"/games.schema"},executionPhase=ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts={"/games.schema", "/games.sql"},executionPhase=ExecutionPhase.BEFORE_TEST_CLASS)
 @ActiveProfiles("test")
 public class GameDAOTests 
 {
@@ -32,14 +32,13 @@ public class GameDAOTests
     @Test
     public void testFindGamesByPlayerName_BadName_EmptyList()
     {
-    	var games = dao.findGamesByPlayerName("Jo To");
+    	var games = dao.findGamesByPlayerName("Chris Evert");
     	
     	assertNotNull(games);
     	assertEquals(0, games.size());
     }
     
     @Test
-    @Sql("/games.sql")
     public void testFindGamesByPlayerName_GoodName_List()
     {
     	var games = dao.findGamesByPlayerName("Bob Breitling");
@@ -50,6 +49,21 @@ public class GameDAOTests
     	Game g = games.get(0);
     	
     	assertEquals("Bob Breitling", g.getWhite());
+    	assertEquals(Result.WHITE_WINS, g.getResult());
+    	assertEquals(4, g.getMoveCount());
+    }
+    
+    @Test
+    public void testFindGamesBySource_GoodSource_List()
+    {
+    	var games = dao.findGamesBySource("JoToGames");
+    	
+    	assertNotNull(games);
+    	assertEquals(2, games.size());
+    	
+    	Game g = games.get(0);
+    	
+    	assertEquals("Jo To", g.getWhite());
     	assertEquals(Result.WHITE_WINS, g.getResult());
     	assertEquals(4, g.getMoveCount());
     }
