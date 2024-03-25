@@ -116,6 +116,17 @@ public class PGNReaderTest
 	}
 	
 	@Test
+	public void testGetMoveList_PGNWithVariations_List()
+	{
+		var reader = PGNReader.createReader("1. g4+ Kg5 2. Kg7 Kxg4 3. Kf6 Kf4 4. h4 ( 4. Ke6 Ke4 5. h4 Kf4 6. Kd5 Kg4 7. Kc6 Kxh4 8. Kxc7 ) 4... Kg4 5. Ke5 Kxh4 6. Kd5 Kg4 7. Kc6 Kf4 8. Kxc7 { Game is drawn by insufficient material} 1/2-1/2");
+		var moves = reader.getMoveList();
+		
+		assertNotNull(moves);
+		assertEquals(9, moves.size());
+		assertEquals(Result.DRAW, Result.valueOfResult(moves.get(8).getScore()));		
+	}
+	
+	@Test
 	public void testGetGames_PGNFileWithFENs_ListOfPositions() throws PGNException
 	{
 		var source = Factory.Persistence.Source.create("/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");

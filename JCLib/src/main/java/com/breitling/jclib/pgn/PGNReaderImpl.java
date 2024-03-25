@@ -29,6 +29,7 @@ public class PGNReaderImpl implements PGNReader
 //  private static final String TOKEN_DOT     = ".";    
     private static final String TOKEN_SPACE   = " ";
     private static final String TOKEN_COMMENT = "{";
+    private static final String TOKEN_VARIATION = "(";
 
     private int moveCount;
     
@@ -328,16 +329,21 @@ public class PGNReaderImpl implements PGNReader
     {
     	var t = getNextToken();
     	
-    	if (t.startsWith(TOKEN_COMMENT))
+    	if (t.startsWith(TOKEN_COMMENT) || t.startsWith(TOKEN_VARIATION))
     	{
     		do
     		{
     			t = getNextToken();				// <numer>... 
     		}
-    		while(!t.endsWith("}"));
+    		while(!(t.endsWith("}") || t.endsWith(")")));
         
 	        if (color == Color.WHITE)
+	        {
 	            t = getNextToken();            // FOR WHITE COMMENTS EAT BLACK MOVE NUMBER...
+	            
+	            if (!t.matches("[0-9]+\\.\\.\\."))
+	            	pushToken(t);
+	        }
     	}
     	else
     	{
