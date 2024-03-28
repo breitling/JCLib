@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class GamePositionDAOImpl extends GenericDAO implements GamePositionDAO
 {
+	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(GamePositionDAOImpl.class);
 }

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MoveDAOImpl extends GenericDAO implements MoveDAO
 {
+	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(MoveDAOImpl.class);
 }

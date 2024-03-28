@@ -31,7 +31,8 @@ public class PGNReaderImpl implements PGNReader
     private static final String TOKEN_COMMENT = "{";
     private static final String TOKEN_VARIATION = "(";
 
-    private int moveCount;
+    @SuppressWarnings("unused")
+	private int moveCount;
     
     private int pos;
     private String [] tokens;

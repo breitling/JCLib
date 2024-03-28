@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NoteDAOImpl extends GenericDAO implements NoteDAO
 {
+	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(NoteDAOImpl.class);
 }

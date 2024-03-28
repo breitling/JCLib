@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.util.Factory;
 
 public class PGNReaderTest 

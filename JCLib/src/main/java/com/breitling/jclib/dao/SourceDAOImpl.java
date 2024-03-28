@@ -23,7 +23,7 @@ public class SourceDAOImpl extends GenericDAO implements SourceDAO
 		try
 		{
 			List<Source> list = 
-			    getJdbcTemplate().query("SELECT id,name,path FROM SOURCES WHERE id = " + id,
+			    getJdbcTemplate().query(new StringBuilder("SELECT id,name,path FROM SOURCES WHERE id = ").append(id).toString(),
 			                                Factory.Persistence.Source.getRowMapper());
 			if (list.size() > 0)
 				source = Optional.of(list.get(0));
