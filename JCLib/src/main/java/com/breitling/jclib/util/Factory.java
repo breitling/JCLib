@@ -45,12 +45,22 @@ public class Factory
 						var g = new com.breitling.jclib.persistence.Game();
 						
 						g.setId(rs.getLong(1));
-						g.setWhite(rs.getString(2));
-						g.setBlack(rs.getString(3));
-						g.setResult(Result.valueOfResult(rs.getString(4)));
-						g.setDate(Date.valueOf(LocalDate.now()));
-						g.setMoveCount(rs.getInt(5));
-						g.setMoves(rs.getString(6));
+						g.setSourceId(rs.getLong(2));
+						g.setWhite(rs.getString(3));
+						g.setWhiteELO(rs.getString(4));
+						g.setBlack(rs.getString(5));
+						g.setBlackELO(rs.getString(6));
+						g.setEvent(rs.getString(7));
+						g.setSite(rs.getString(8));
+						g.setEventDate(DateUtils.stringToDate(rs.getString(9)));
+						g.setTimeControl(rs.getString(10));
+						g.setRound(rs.getInt(11));
+						g.setDate(DateUtils.stringToDate(rs.getString(12)));
+						g.setResult(Result.valueOfResult(rs.getString(13)));
+						g.setECO(rs.getString(14));
+						g.setFEN(rs.getString(15));
+						g.setMoveCount(rs.getInt(16));
+						g.setMoves(rs.getString(17));
 						
 						return g;
 					}

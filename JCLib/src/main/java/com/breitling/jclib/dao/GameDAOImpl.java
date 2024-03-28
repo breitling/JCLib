@@ -2,18 +2,43 @@ package com.breitling.jclib.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.breitling.jclib.persistence.Game;
+import com.breitling.jclib.persistence.Source;
 import com.breitling.jclib.util.Factory;
 
 @Repository
 public class GameDAOImpl extends GenericDAO implements GameDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);
+	
+
+	@Override
+	public Optional<Game> findById(Long id)
+	{
+		Optional<Game> game = Optional.empty();
+		
+		try
+		{
+			List<Game> list = getJdbcTemplate().query(new StringBuilder()
+			    .append("SELECT id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
+			    .append("FROM GAMES WHERE id=").append(id).toString(), Factory.Persistence.Game.getRowMapper());
+			
+			if (list.size() > 0)
+				game = Optional.of(list.get(0));
+		}
+		catch (Exception e)
+		{
+			LOG.error(e.getMessage());
+		}
+		
+		return game;
+	}
 	
 	@Override
 	public List<Game> findGamesByPlayerName(String name)
@@ -22,8 +47,10 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 		
 		try
 		{
-			games = getJdbcTemplate().query("SELECT id,white,black,result,move_count,moves FROM GAMES WHERE white='" + name + "' OR black='" + name + "'", 
-			           Factory.Persistence.Game.getRowMapper());
+			games = getJdbcTemplate().query(new StringBuilder()
+    		    .append("SELECT id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
+				.append("FROM GAMES WHERE white='").append(name).append("' OR black='").append(name).append("'").toString(),
+			    Factory.Persistence.Game.getRowMapper());
 		}
 		catch (Exception e)
 		{
@@ -40,8 +67,10 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 		
 		try
 		{
-			games = getJdbcTemplate().query("SELECT g.id,white,black,result,move_count,moves FROM GAMES g, SOURCES s WHERE g.source_id=s.id AND s.name='" + source + "'",
-			           Factory.Persistence.Game.getRowMapper());
+			games = getJdbcTemplate().query(new StringBuilder()
+			    .append("SELECT g.id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
+				.append("FROM GAMES g, SOURCES s WHERE g.source_id=s.id AND s.name='").append(source).append("'").toString(),
+			    Factory.Persistence.Game.getRowMapper());
 		}
 		catch (Exception e)
 		{

@@ -265,7 +265,7 @@ public class PGNReaderImpl implements PGNReader
 	    		 break;
 	    		 
 	    	case "ECO":
-	    		 g.setEco(value);
+	    		 g.setECO(value);
 	    		 break;
 	    		 
 	    	case "FEN":

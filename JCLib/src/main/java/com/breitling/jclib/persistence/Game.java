@@ -157,7 +157,7 @@ public class Game
 		return eco;
 	}
 	
-	public void setEco(String eco) {
+	public void setECO(String eco) {
 		this.eco = eco;
 	}
 	

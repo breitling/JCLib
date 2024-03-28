@@ -1,7 +1,9 @@
 package com.breitling.jclib.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,6 +59,29 @@ public class GameDAOTests
     	assertEquals(2, games.size());
     	
     	Game g = games.get(0);
+    	
+    	assertEquals("Jo To", g.getWhite());
+    	assertEquals(Result.WHITE_WINS, g.getResult());
+    	assertEquals(4, g.getMoveCount());
+    }
+    
+    @Test
+    public void testFindById_BadId_NotPresent()
+    {
+    	var game = dao.findById(123L);
+    	
+    	assertTrue(game.isEmpty());
+    	assertFalse(game.isPresent());
+    }
+    
+    @Test
+    public void testFindById_GoodId_Game()
+    {
+    	var game = dao.findById(3L);
+    	
+    	var g = game.get();
+    	
+    	assertTrue(game.isPresent());
     	
     	assertEquals("Jo To", g.getWhite());
     	assertEquals(Result.WHITE_WINS, g.getResult());
