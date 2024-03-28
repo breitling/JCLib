@@ -1,12 +1,10 @@
 package com.breitling.jclib.dao;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 import com.breitling.jclib.persistence.Source;
 
-@Repository
-public interface SourceDAO extends CrudRepository<Source,Long>
+public interface SourceDAO
 {
-
+	Optional<Source> findById(long id);
 }

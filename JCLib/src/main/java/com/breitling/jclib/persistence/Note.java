@@ -1,16 +1,9 @@
 package com.breitling.jclib.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
 @Table(name="NOTES")
 public class Note 
 {
@@ -19,8 +12,7 @@ public class Note
 	private String note;
 	
 	@Id
-	@Column(name="ID", nullable=false)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)	
+	@Column(value="ID")
 	public long getId() {
 		return id;
 	}
@@ -29,8 +21,6 @@ public class Note
 		this.id = id;
 	}
 	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="POS_ID")
 	public Position getPosition() {
 		return position;
 	}
@@ -39,7 +29,7 @@ public class Note
 		this.position = position;
 	}
 	
-	@Column(name="NOTE", nullable=false)
+	@Column(value="NOTE")
 	public String getNote() {
 		return note;
 	}

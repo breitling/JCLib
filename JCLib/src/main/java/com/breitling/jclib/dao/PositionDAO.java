@@ -5,8 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.breitling.jclib.persistence.Position;
 
-@Repository
-public interface PositionDAO extends CrudRepository<Position,Long>
+public interface PositionDAO
 {
 
 }

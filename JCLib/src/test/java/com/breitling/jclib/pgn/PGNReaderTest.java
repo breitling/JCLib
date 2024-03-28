@@ -113,6 +113,7 @@ public class PGNReaderTest
 		var games = reader.getGames();
 		
 		assertNotNull(games);
+		assertEquals(22784, games.size());
 	}
 	
 	@Test

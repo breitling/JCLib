@@ -1,9 +1,13 @@
 package com.breitling.jclib.util;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+
+import org.springframework.jdbc.core.RowMapper;
 
 import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Result;
@@ -30,6 +34,27 @@ public class Factory
 				g.setMoves(moves);
 				
 				return g;
+			}
+			
+			public static RowMapper<com.breitling.jclib.persistence.Game> getRowMapper()
+			{
+				return new RowMapper<com.breitling.jclib.persistence.Game>() {
+					@Override
+					public com.breitling.jclib.persistence.Game mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						var g = new com.breitling.jclib.persistence.Game();
+						
+						g.setId(rs.getLong(1));
+						g.setWhite(rs.getString(2));
+						g.setBlack(rs.getString(3));
+						g.setResult(Result.valueOfResult(rs.getString(4)));
+						g.setDate(Date.valueOf(LocalDate.now()));
+						g.setMoveCount(rs.getInt(5));
+						g.setMoves(rs.getString(6));
+						
+						return g;
+					}
+				};
 			}
 			
 			private Game() {};
@@ -60,6 +85,23 @@ public class Factory
 				s.setPath(path);
 				
 				return s;
+			}
+			
+			public static RowMapper<com.breitling.jclib.persistence.Source> getRowMapper()
+			{
+				return new RowMapper<com.breitling.jclib.persistence.Source>() {
+					@Override
+					public com.breitling.jclib.persistence.Source mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						var s = new com.breitling.jclib.persistence.Source();
+						
+						s.setId(rs.getLong(1));
+						s.setName(rs.getString(2));
+						s.setPath(rs.getString(3));
+						
+						return s;
+					}
+				};
 			}
 		}
 		

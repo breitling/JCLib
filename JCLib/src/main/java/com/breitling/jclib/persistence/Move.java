@@ -1,16 +1,9 @@
 package com.breitling.jclib.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
 @Table(name="POSITIONMOVES")
 public class Move 
 {
@@ -24,8 +17,7 @@ public class Move
 	private int drawPercent;
 	
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="ID", unique=true, nullable=false)
+    @Column(value="ID")
 	public long getId() {
 		return id;
 	}
@@ -34,8 +26,6 @@ public class Move
 		this.id = id;
 	}
 	
-	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="POS_ID")
 	public Position getPosition() {
 		return this.position;
 	}
@@ -44,7 +34,7 @@ public class Move
 		this.position = p;
 	}
 	
-	@Column(name="", nullable=false)
+	@Column(value="MOVE")
 	public String getMove() {
 		return move;
 	}
@@ -53,7 +43,7 @@ public class Move
 		this.move = move;
 	}
 	
-	@Column(name="GAMES", nullable=false)	
+	@Column(value="GAMES")	
 	public int getGames() {
 		return games;
 	}
@@ -62,7 +52,7 @@ public class Move
 		this.games = games;
 	}
 	
-	@Column(name="AVERAGE_ELO", nullable=false)	
+	@Column(value="AVERAGE_ELO")	
 	public int getAverageELO() {
 		return averageELO;
 	}
@@ -71,7 +61,7 @@ public class Move
 		this.averageELO = averageELO;
 	}
 	
-	@Column(name="WHITE_WIN_PECENTAGE", nullable=false)	
+	@Column(value="WHITE_WIN_PECENTAGE")	
 	public int getWhiteWinPercent() {
 		return whiteWinPercent;
 	}
@@ -80,7 +70,7 @@ public class Move
 		this.whiteWinPercent = whiteWinPercent;
 	}
 	
-	@Column(name="BLACK_WIN_PERCENTAGE", nullable=false)	
+	@Column(value="BLACK_WIN_PERCENTAGE")	
 	public int getBlackWinPercent() {
 		return blackWinPercent;
 	}
@@ -89,7 +79,7 @@ public class Move
 		this.blackWinPercent = blackWinPercent;
 	}
 	
-	@Column(name="DRAW_PERCENTAGE", nullable=false)	
+	@Column(value="DRAW_PERCENTAGE")	
 	public int getDrawPercent() {
 		return drawPercent;
 	}

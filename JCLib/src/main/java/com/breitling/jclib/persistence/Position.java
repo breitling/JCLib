@@ -3,18 +3,10 @@ package com.breitling.jclib.persistence;
 import java.sql.Date;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
 @Table(name="POSITIONS")
 public class Position 
 {
@@ -25,8 +17,7 @@ public class Position
 	private Set<Move> moves;
 	
 	@Id
-	@Column(name="ID", nullable=false)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(value="ID")
 	public long getId() {
 		return id;
 	}
@@ -35,7 +26,7 @@ public class Position
 		this.id = id;
 	}
 	
-	@Column(name="BITBOARDHASH", nullable=false)
+	@Column(value="BITBOARDHASH")
 	public long getBitBoardHash() {
 		return bitBoardHash;
 	}
@@ -44,7 +35,7 @@ public class Position
 		this.bitBoardHash = bitBoardHash;
 	}
 	
-	@Column(name="FEN", nullable=false)	
+	@Column(value="FEN")	
 	public String getFen() {
 		return fen;
 	}
@@ -53,7 +44,7 @@ public class Position
 		this.fen = fen;
 	}
 
-	@Column(name="CREATED", nullable=false)	
+	@Column(value="CREATED")	
 	public Date getCreated() {
 		return created;
 	}
@@ -62,8 +53,6 @@ public class Position
 		this.created = created;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY)
-	@JoinTable(name="POSITIONMOVES", joinColumns=@JoinColumn(name="ID"), inverseJoinColumns=@JoinColumn(name="POS_ID"))
 	public Set<Move> getMoves() {
 		return this.moves;
 	}

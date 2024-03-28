@@ -1,13 +1,9 @@
 package com.breitling.jclib.persistence;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity
 @Table(name = "SOURCES")
 public class Source 
 {
@@ -16,8 +12,7 @@ public class Source
 	private String path;
 	
 	@Id
-	@Column(name="ID", unique=true, nullable=false)
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(value="ID")
 	public long getId() {
 		return id;
 	}
@@ -26,7 +21,7 @@ public class Source
 		this.id = id;
 	}
 	
-	@Column(name="NAME", nullable=false)
+	@Column(value="NAME")
 	public String getName() {
 		return name;
 	}
@@ -35,7 +30,7 @@ public class Source
 		this.name = name;
 	}
 	
-	@Column(name="PATH", nullable=false)
+	@Column(value="PATH")
 	public String getPath() {
 		return path;
 	}
