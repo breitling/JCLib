@@ -164,6 +164,11 @@ public class Factory
 		public static final int INMEMORY = 0;
 		public static final int ONDISK = 1;
 		
+		public static GenericDAO createDAO(Class<?> klass, String db)
+		{
+			return createDAO(klass, db, ONDISK);
+		}
+		
 		public static GenericDAO createDAO(Class<?> klass, String db, int where)
 		{
 			String key = new StringBuilder(klass.getName()).append("::").append(db).toString();

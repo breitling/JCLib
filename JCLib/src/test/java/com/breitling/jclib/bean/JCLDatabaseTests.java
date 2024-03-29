@@ -40,7 +40,7 @@ public class JCLDatabaseTests
 	@BeforeEach
 	public void setupForTest()
 	{
-		dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "test", Factory.DAO.ONDISK);
+		dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "test");
 	}
 	
 	@Test
