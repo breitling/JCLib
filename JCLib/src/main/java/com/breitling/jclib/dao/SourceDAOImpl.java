@@ -8,12 +8,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 
 import com.breitling.jclib.persistence.Source;
 import com.breitling.jclib.util.Factory;
 
-@Repository
 public class SourceDAOImpl extends GenericDAO implements SourceDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);

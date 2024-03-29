@@ -5,26 +5,45 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.PathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.breitling.jclib.chess.Result;
 import com.breitling.jclib.persistence.Game;
+import com.breitling.jclib.util.Factory;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Sql(scripts={"/games.schema", "/games.sql"},executionPhase=ExecutionPhase.BEFORE_TEST_CLASS)
 @ActiveProfiles("test")
 public class GameDAOTests 
 {
-    @Autowired
     private GameDAO dao;
+    
+    private static boolean initialized = false;
+	
+	@BeforeEach
+	public void setupForTest() throws SQLException
+	{
+		dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "games", Factory.DAO.INMEMORY);
+		
+		if (!initialized)
+		{
+			Connection conn = ((GenericDAO) dao).getDataSource().getConnection();
+			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/games.schema")));
+			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/games.sql")));
+			initialized = true;
+		}
+	}
     
     @Test
     public void testFindGamesByPlayerName_BadName_EmptyList()

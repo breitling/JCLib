@@ -25,34 +25,6 @@ public class Factory
 	
 	public static class Persistence
 	{
-		public static class DAO
-		{
-			private static Map<String,GenericDAO> daoCache = new HashMap<>();
-			
-			public static GenericDAO createDAO(Class<?> klass, String db)
-			{
-				String key = new StringBuilder(klass.getName()).append("::").append(db).toString();
-				GenericDAO dao = daoCache.get(key);
-				
-				if (dao == null)
-				{
-					try 
-					{
-						dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
-						dao.setDataSource(JCLDatabase.createDataSource(db));
-						daoCache.put(key, dao);
-					} 
-					catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
-						   InvocationTargetException | NoSuchMethodException | SecurityException e) 
-					{
-						LOG.error("Error constructing a {} DAO: {}", klass.getName(), e.getMessage());
-					}
-				}
-				
-				return dao;
-			}
-		}
-		
 		public static class Game
 		{
 			public static com.breitling.jclib.persistence.Game create()
@@ -183,6 +155,42 @@ public class Factory
 		}
 		
 		private DateUtils() {};
+	}
+	
+	public static class DAO
+	{
+		private static Map<String,GenericDAO> daoCache = new HashMap<>();
+		
+		public static final int INMEMORY = 0;
+		public static final int ONDISK = 1;
+		
+		public static GenericDAO createDAO(Class<?> klass, String db, int where)
+		{
+			String key = new StringBuilder(klass.getName()).append("::").append(db).toString();
+			GenericDAO dao = daoCache.get(key);
+			
+			if (dao == null)
+			{
+				try 
+				{
+					dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
+					
+					if (where == ONDISK)
+						dao.setDataSource(JCLDatabase.createDataSource(db));
+					else
+						dao.setDataSource(JCLDatabase.createInMemoryDataSource(db));
+					
+					daoCache.put(key, dao);
+				} 
+				catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
+					   InvocationTargetException | NoSuchMethodException | SecurityException e) 
+				{
+					LOG.error("Error constructing a {} DAO: {}", klass.getName(), e.getMessage());
+				}
+			}
+			
+			return dao;
+		}
 	}
 	
 	private Factory() {};

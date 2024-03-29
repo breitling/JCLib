@@ -27,29 +27,25 @@ import com.breitling.jclib.util.Factory;
 @SpringBootTest
 @ActiveProfiles("test")
 public class JCLDatabaseTests 
-{
-	private static DataSource datasource;
-	
+{	
 	private SourceDAO dao;
 	
 	@BeforeAll
 	public static void setupForTests() throws ScriptException, SQLException
 	{
-		datasource = JCLDatabase.createDataSource("test");
-		ScriptUtils.executeSqlScript(datasource.getConnection(), new PathResource(Paths.get("./src/test/datasets/sources.schema")));
+		DataSource datasource = JCLDatabase.createDataSource("test");
 		ScriptUtils.executeSqlScript(datasource.getConnection(), new PathResource(Paths.get("./src/test/datasets/sources.sql")));
 	}
 	
 	@BeforeEach
 	public void setupForTest()
 	{
-		dao = (SourceDAO) Factory.Persistence.DAO.createDAO(SourceDAOImpl.class, "test");
+		dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "test", Factory.DAO.ONDISK);
 	}
 	
 	@Test
 	public void testCreateDataSource_GoodDB_Object() throws SQLException
 	{
-		assertNotNull(datasource);
 		assertNotNull(dao);
 		
 		var source = dao.findById(1L);
@@ -58,7 +54,7 @@ public class JCLDatabaseTests
 	}
 	
 	@Test
-	public void testDummy_Nothing_Null()
+	public void testDaoCaching_SecondCall_SameDao()
 	{
 		var source = dao.findById(1L);
     	

@@ -6,12 +6,10 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
 
 import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.util.Factory;
 
-@Repository
 public class GameDAOImpl extends GenericDAO implements GameDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);

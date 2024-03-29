@@ -1,2 +1,9 @@
 
+CREATE TABLE IF NOT EXISTS SOURCES (
+    ID BIGINT AUTO_INCREMENT NOT NULL,
+    NAME VARCHAR(128) NOT NULL,
+    PATH VARCHAR(256) NOT NULL,
+    PRIMARY KEY(ID)
+);
+
 INSERT INTO SOURCES (name,path) VALUES ('TestPositions','C:\Users\bobbr\Desktop\Chess\Games\test.pgn');
