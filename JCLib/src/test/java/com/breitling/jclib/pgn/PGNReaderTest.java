@@ -94,7 +94,7 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_GoodPGNFile_ListOfGames() throws PGNException
 	{
-		var source = Factory.Persistence.Source.create("/Users/bobbr/Desktop/Chess/Games/RJF60.pgn");
+		var source = Factory.Persistence.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn");
 		var reader = PGNReader.createReader(source);
 		
 		var games = reader.getGames();
@@ -105,7 +105,7 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_BigPGNFile_ListOfGames() throws PGNException
 	{
-		var source = Factory.Persistence.Source.create("/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
+		var source = Factory.Persistence.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
 		var reader = PGNReader.createReader(source);
 		
 		var games = reader.getGames();
@@ -130,7 +130,7 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_PGNFileWithFENs_ListOfPositions() throws PGNException
 	{
-		var source = Factory.Persistence.Source.create("/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");
+		var source = Factory.Persistence.Source.create("EndGames", "/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");
 		var reader = PGNReader.createReader(source);
 		var games = reader.getGames();
 		

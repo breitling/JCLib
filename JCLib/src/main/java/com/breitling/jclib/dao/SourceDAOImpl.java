@@ -1,10 +1,13 @@
 package com.breitling.jclib.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import com.breitling.jclib.persistence.Source;
@@ -34,5 +37,16 @@ public class SourceDAOImpl extends GenericDAO implements SourceDAO
 		}
 				
 		return source;
+	}
+
+	@Override
+	public int addSource(Source source) 
+	{
+		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("SOURCES").usingGeneratedKeyColumns("ID");
+		Map<String,Object> params = new HashMap<>();
+		params.put("NAME", source.getName());
+		params.put("PATH", source.getPath());
+		
+		return s.execute(params);
 	}
 }

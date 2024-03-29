@@ -6,5 +6,7 @@ import com.breitling.jclib.persistence.Source;
 
 public interface SourceDAO
 {
-	Optional<Source> findById(long id);
+	public Optional<Source> findById(long id);
+	
+	public int addSource(Source source);
 }

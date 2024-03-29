@@ -10,9 +10,9 @@ public class JCLDatabase
 	{
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         
-        dataSource.setDriverClassName("com.h2.Driver");
-        dataSource.setUrl("jdbc:h2:~/" + dbname);
-        dataSource.setUsername("sa");
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl(new StringBuilder("jdbc:h2:./").append(dbname).toString());
+        dataSource.setUsername("");
         dataSource.setPassword("");
 
         return dataSource;

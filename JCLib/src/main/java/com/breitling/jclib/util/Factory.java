@@ -1,21 +1,58 @@
 package com.breitling.jclib.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.breitling.jclib.bean.JCLDatabase;
 import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Result;
+import com.breitling.jclib.dao.GenericDAO;
 
 public class Factory 
 {
+	private static Logger LOG = LoggerFactory.getLogger(Factory.class);
+	
 	public static class Persistence
 	{
+		public static class DAO
+		{
+			private static Map<String,GenericDAO> daoCache = new HashMap<>();
+			
+			public static GenericDAO createDAO(Class<?> klass, String db)
+			{
+				String key = new StringBuilder(klass.getName()).append("::").append(db).toString();
+				GenericDAO dao = daoCache.get(key);
+				
+				if (dao == null)
+				{
+					try 
+					{
+						dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
+						dao.setDataSource(JCLDatabase.createDataSource(db));
+						daoCache.put(key, dao);
+					} 
+					catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
+						   InvocationTargetException | NoSuchMethodException | SecurityException e) 
+					{
+						LOG.error("Error constructing a {} DAO: {}", klass.getName(), e.getMessage());
+					}
+				}
+				
+				return dao;
+			}
+		}
+		
 		public static class Game
 		{
 			public static com.breitling.jclib.persistence.Game create()
@@ -88,10 +125,11 @@ public class Factory
 		
 		public static class Source
 		{
-			public static com.breitling.jclib.persistence.Source create(String path)
+			public static com.breitling.jclib.persistence.Source create(String name, String path)
 			{
 				var s = new com.breitling.jclib.persistence.Source();
 				
+				s.setName(name);
 				s.setPath(path);
 				
 				return s;
