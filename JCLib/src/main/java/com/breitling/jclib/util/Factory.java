@@ -78,6 +78,36 @@ public class Factory
 			private Game() {};
 		}
 		
+		public static class Note 
+		{
+			public static com.breitling.jclib.persistence.Note create(long posId, String note)
+			{
+				var n = new com.breitling.jclib.persistence.Note();
+				
+				n.setNote(note);
+				
+				return n;
+			}
+			
+			public static RowMapper<com.breitling.jclib.persistence.Note> getRowMapper()
+			{
+				return new RowMapper<com.breitling.jclib.persistence.Note>() {
+					@Override
+					public com.breitling.jclib.persistence.Note mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						var n = new com.breitling.jclib.persistence.Note();
+						
+						n.setId(rs.getLong(1));
+						
+						n.setNote(rs.getString(3));
+						
+						return n;
+					}
+				};
+			}
+			private Note(){};
+		}
+		
 		public static class Position 
 		{
 			public static com.breitling.jclib.persistence.Position create(String fen)
@@ -109,7 +139,7 @@ public class Factory
 				};
 			}
 			
-			private Position() {};
+			private Position(){};
 		}
 		
 		public static class Source
@@ -142,7 +172,7 @@ public class Factory
 			}
 		}
 		
-		private Persistence() {};
+		private Persistence(){};
 	}
 	
 	public static class Model
@@ -215,5 +245,5 @@ public class Factory
 		}
 	}
 	
-	private Factory() {};
+	private Factory(){};
 }

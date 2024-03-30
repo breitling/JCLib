@@ -8,5 +8,5 @@ public interface GamePositionDAO
 {
 	public List<Position> findByGameId(long id);
 	
-	public int addRecord(long game_id, long pos_id);
+	public int addRecord(long gameId, long posId);
 }
