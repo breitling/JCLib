@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -92,6 +91,24 @@ public class Factory
 				return p;
 			}
 			
+			public static RowMapper<com.breitling.jclib.persistence.Position> getRowMapper()
+			{
+				return new RowMapper<com.breitling.jclib.persistence.Position>() {
+					@Override
+					public com.breitling.jclib.persistence.Position mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+						var p = new com.breitling.jclib.persistence.Position();
+						
+						p.setId(rs.getLong(1));
+						p.setBitBoardHash(rs.getLong(2));
+						p.setFen(rs.getString(3));
+						p.setCreated(DateUtils.stringToDate(rs.getString(4)));
+						
+						return p;
+					}
+				};
+			}
+			
 			private Position() {};
 		}
 		
@@ -149,7 +166,7 @@ public class Factory
 			}
 		}
 		
-		public static String dateToString(Timestamp t)
+		public static String dateToString(Date t)
 		{
 			return sdf.format(t);
 		}

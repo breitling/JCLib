@@ -51,7 +51,7 @@ public class SourceDAOTests
     }
     
 	@Test
-	public void testAddSource_GoodSource_Success() throws SQLException
+	public void testAddSource_GoodSource_OneRow() throws SQLException
 	{
 		int rows = dao.addSource(Factory.Persistence.Source.create("RJF60", "rjf60.pgn"));
 		
