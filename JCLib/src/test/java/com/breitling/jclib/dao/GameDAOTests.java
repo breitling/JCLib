@@ -65,7 +65,7 @@ public class GameDAOTests
     	Game g = games.get(0);
     	
     	assertEquals("Bob Breitling", g.getWhite());
-    	assertEquals(Result.WHITE_WINS, g.getResult());
+    	assertEquals(Result.WHITE_WINS, Result.valueOfResult(g.getResult()));
     	assertEquals(4, g.getMoveCount());
     }
     
@@ -80,7 +80,7 @@ public class GameDAOTests
     	Game g = games.get(0);
     	
     	assertEquals("Jo To", g.getWhite());
-    	assertEquals(Result.WHITE_WINS, g.getResult());
+    	assertEquals(Result.WHITE_WINS, Result.valueOfResult(g.getResult()));
     	assertEquals(4, g.getMoveCount());
     }
     
@@ -103,7 +103,7 @@ public class GameDAOTests
     	assertTrue(game.isPresent());
     	
     	assertEquals("Jo To", g.getWhite());
-    	assertEquals(Result.WHITE_WINS, g.getResult());
+    	assertEquals(Result.WHITE_WINS, Result.valueOfResult(g.getResult()));
     	assertEquals(4, g.getMoveCount());
     }
 }

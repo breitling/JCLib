@@ -3,8 +3,8 @@ package com.breitling.jclib.pgn;
 import java.util.List;
 
 import com.breitling.jclib.chess.Board;
-import com.breitling.jclib.persistence.Game;
-import com.breitling.jclib.persistence.Source;
+import com.breitling.jclib.model.Game;
+import com.breitling.jclib.model.Source;
 import com.breitling.jclib.pgn.PGNReaderImpl.Move;
 
 public interface PGNReader 

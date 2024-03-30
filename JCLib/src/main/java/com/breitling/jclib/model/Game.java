@@ -1,16 +1,14 @@
-package com.breitling.jclib.persistence;
+package com.breitling.jclib.model;
 
 import java.sql.Date;
+import java.util.Set;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import com.breitling.jclib.chess.Result;
 
-@Table(name="GAMES")
 public class Game 
 {
 	private long id;
-	private long sourceId;
+	private Source source;
 	private String white;
 	private String whiteELO;
 	private String black;
@@ -21,14 +19,16 @@ public class Game
 	private String timeControl;
 	private Integer round;
 	private Date date;
-	private String result;
+	private Result result;
 	private String eco;
 	private String fEN;
 	private int moveCount;
 	private String moves;
 	
-	@Id
-	@Column(value="ID")
+	private Set<Position> positions;
+	
+//  GETTERS AND SETTERS	
+	
 	public long getId() {
 		return id;
 	}
@@ -37,16 +37,14 @@ public class Game
 		this.id = id;
 	}
 	
-	@Column(value="SOURCE_ID")
-	public long getSourceId() {
-		return sourceId;
+	public Source getSourceId() {
+		return source;
 	}
 
-	public void setSourceId(long source_id) {
-		this.sourceId = source_id;
+	public void setSourceId(Source source) {
+		this.source = source;
 	}
 
-	@Column(value="WHITE")
 	public String getWhite() {
 		return white;
 	}
@@ -55,7 +53,6 @@ public class Game
 		this.white = white;
 	}
 	
-	@Column(value="WHITE_ELO")
 	public String getWhiteELO() {
 		return whiteELO;
 	}
@@ -64,7 +61,6 @@ public class Game
 		this.whiteELO = whiteELO;
 	}
 	
-	@Column(value="BLACK")	
 	public String getBlack() {
 		return black;
 	}
@@ -73,7 +69,6 @@ public class Game
 		this.black = black;
 	}
 	
-	@Column(value="BLACK_ELO")
 	public String getBlackELO() {
 		return blackELO;
 	}
@@ -82,7 +77,6 @@ public class Game
 		this.blackELO = blackELO;
 	}
 	
-	@Column(value="EVENT")	
 	public String getEvent() {
 		return event;
 	}
@@ -91,7 +85,6 @@ public class Game
 		this.event = event;
 	}
 	
-	@Column(value="SITE")	
 	public String getSite() {
 		return site;
 	}
@@ -100,7 +93,6 @@ public class Game
 		this.site = site;
 	}
 	
-	@Column(value="EVENT_DATE")	
 	public Date getEventDate() {
 		return eventDate;
 	}
@@ -109,7 +101,6 @@ public class Game
 		this.eventDate = eventDate;
 	}
 	
-	@Column(value="TIME_CONTROL")	
 	public String getTimeControl() {
 		return timeControl;
 	}
@@ -118,7 +109,6 @@ public class Game
 		this.timeControl = timeControl;
 	}
 	
-	@Column(value="ROUND")	
 	public Integer getRound() {
 		return round;
 	}
@@ -127,7 +117,6 @@ public class Game
 		this.round = round;
 	}
 	
-	@Column(value="GAME_DATE")
 	public Date getDate() {
 		return date;
 	}
@@ -136,16 +125,14 @@ public class Game
 		this.date = date;
 	}
 	
-	@Column(value="RESULT")
-	public String getResult() {
+	public Result getResult() {
 		return result;
 	}
 	
-	public void setResult(String result) {
+	public void setResult(Result result) {
 		this.result = result;
 	}
 	
-	@Column(value="ECO")	
 	public String getEco() {
 		return eco;
 	}
@@ -154,7 +141,6 @@ public class Game
 		this.eco = eco;
 	}
 	
-	@Column(value="FEN")	
 	public String getFEN() {
 		return fEN;
 	}
@@ -163,7 +149,6 @@ public class Game
 		this.fEN = fen;
 	}
 	
-	@Column(value="MOVE_COUNT")	
 	public int getMoveCount() {
 		return moveCount;
 	}
@@ -172,12 +157,19 @@ public class Game
 		this.moveCount = moveCount;
 	}
 	
-	@Column(value="MOVES")
 	public String getMoves() {
 		return this.moves;
 	}
 	
 	public void setMoves(String moves) {
 		this.moves = moves;
+	}
+	
+	public Set<Position> getPositions() {
+		return positions;
+	}
+	
+	public void setPositions(Set<Position> positions) {
+		this.positions = positions;
 	}
 }

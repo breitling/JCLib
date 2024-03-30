@@ -31,15 +31,31 @@ public class Factory
 				return new com.breitling.jclib.persistence.Game();
 			}
 			
-			public static com.breitling.jclib.persistence.Game create(String w, String b, Result r, String moves) 
+			public static com.breitling.jclib.persistence.Game create(String w, String b, String r, String moves) 
 			{
 				var g = new com.breitling.jclib.persistence.Game();
 				
+				g.setId(0L);
 				g.setWhite(w);
 				g.setBlack(b);
 				g.setResult(r);
 				g.setDate(Date.valueOf(LocalDate.now()));
 				g.setMoves(moves);
+				
+				return g;
+			}
+			
+			public static com.breitling.jclib.persistence.Game create(com.breitling.jclib.model.Game game) 
+			{
+				var g = new com.breitling.jclib.persistence.Game();
+				
+				g.setId(game.getId());
+				g.setWhite(game.getWhite());
+				g.setBlack(game.getBlack());
+				g.setResult(game.getResult().name());
+				g.setDate(game.getDate());
+				g.setMoveCount(game.getMoveCount());
+				g.setMoves(game.getMoves());
 				
 				return g;
 			}
@@ -64,7 +80,7 @@ public class Factory
 						g.setTimeControl(rs.getString(10));
 						g.setRound(rs.getInt(11));
 						g.setDate(DateUtils.stringToDate(rs.getString(12)));
-						g.setResult(Result.valueOfResult(rs.getString(13)));
+						g.setResult(rs.getString(13));
 						g.setECO(rs.getString(14));
 						g.setFEN(rs.getString(15));
 						g.setMoveCount(rs.getInt(16));
@@ -84,6 +100,8 @@ public class Factory
 			{
 				var n = new com.breitling.jclib.persistence.Note();
 				
+				n.setId(0L);
+				n.setPositionId(posId);
 				n.setNote(note);
 				
 				return n;
@@ -105,6 +123,7 @@ public class Factory
 					}
 				};
 			}
+			
 			private Note(){};
 		}
 		
@@ -177,6 +196,68 @@ public class Factory
 	
 	public static class Model
 	{
+		public static class Game 
+		{
+			public static com.breitling.jclib.model.Game create()
+			{
+				return new com.breitling.jclib.model.Game();
+			}
+			
+			public static com.breitling.jclib.model.Game create(String w, String b, Result r, String moves) 
+			{
+				var g = new com.breitling.jclib.model.Game();
+				
+				g.setId(0L);
+				g.setWhite(w);
+				g.setBlack(b);
+				g.setResult(r);
+				g.setDate(Date.valueOf(LocalDate.now()));
+				g.setMoves(moves);
+				
+				return g;
+			}
+			
+			public static com.breitling.jclib.model.Game create(com.breitling.jclib.persistence.Game game)
+			{
+				var g = new com.breitling.jclib.model.Game();
+				
+				g.setId(game.getId());
+				g.setWhite(game.getWhite());
+				g.setBlack(game.getBlack());
+				g.setResult(Result.valueOf(game.getResult()));
+				g.setDate(game.getDate());
+				g.setMoveCount(game.getMoveCount());
+				g.setMoves(game.getMoves());
+				
+				return g;
+			}
+		}
+		
+		public static class Source
+		{
+			public static com.breitling.jclib.model.Source create(String name, String path)
+			{
+				var s = new com.breitling.jclib.model.Source();
+				
+				s.setId(0L);
+				s.setName(name);
+				s.setPath(path);
+				
+				return s;
+			}
+			
+			public static com.breitling.jclib.model.Source create(com.breitling.jclib.persistence.Source source)
+			{
+				var s = new com.breitling.jclib.model.Source();
+				
+				s.setId(source.getId());
+				s.setName(source.getName());
+				s.setPath(source.getPath());
+				
+				return s;
+			}
+		}
+		
 		private Model() {};
 	}
 	

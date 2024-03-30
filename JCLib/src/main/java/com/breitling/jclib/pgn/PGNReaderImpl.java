@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Color;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.persistence.Game;
-import com.breitling.jclib.persistence.Source;
+import com.breitling.jclib.model.Game;
+import com.breitling.jclib.model.Source;
 import com.breitling.jclib.util.Factory;
 
 @Service
@@ -187,7 +187,7 @@ public class PGNReaderImpl implements PGNReader
     	
     	if (pos < lines.size())
     	{
-	    	g = Factory.Persistence.Game.create();
+	    	g = Factory.Model.Game.create();
 	    	
 	    	while (lines.get(pos).matches("^\\[.*]$"))
 	    		parseHeader(g, lines.get(pos++));

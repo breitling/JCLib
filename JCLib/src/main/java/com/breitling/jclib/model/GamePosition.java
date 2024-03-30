@@ -1,4 +1,4 @@
-package com.breitling.jclib.persistence;
+package com.breitling.jclib.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -8,8 +8,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class GamePosition 
 {
 	private long id;
-	private long gameId;
-	private long positionId;
+	private Game game;
+	private Position position;
 	
 	@Id
 	@Column(value="ID")
@@ -21,19 +21,19 @@ public class GamePosition
 		this.id = id;
 	}
 
-	public long getGameId() {
-		return gameId;
+	public Game getGame() {
+		return game;
 	}
 
-	public void setGame(Long id) {
-		this.gameId = id;
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
-	public long getPositionId() {
-		return positionId;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setPosition(long id) {
-		this.positionId = id;
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 }

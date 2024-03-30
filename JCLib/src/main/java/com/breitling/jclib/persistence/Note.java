@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Note 
 {
 	private long id;
-	private Position position;
+	private long positionId;
 	private String note;
 	
 	@Id
@@ -21,12 +21,12 @@ public class Note
 		this.id = id;
 	}
 	
-	public Position getPosition() {
-		return position;
+	public long getPositionId() {
+		return positionId;
 	}
 	
-	public void setPosition(Position position) {
-		this.position = position;
+	public void setPositionId(long id) {
+		this.positionId = id;
 	}
 	
 	@Column(value="NOTE")

@@ -1,4 +1,4 @@
-package com.breitling.jclib.persistence;
+package com.breitling.jclib.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Move 
 {
 	private long id;
-	private long positionId;
+	private Position position;
 	private String move;
 	private int games;
 	private int averageELO;
@@ -26,12 +26,12 @@ public class Move
 		this.id = id;
 	}
 	
-	public long getPositionId() {
-		return this.positionId;
+	public Position getPosition() {
+		return this.position;
 	}
 	
-	public void setPosition(long id) {
-		this.positionId = id;
+	public void setPosition(Position p) {
+		this.position = p;
 	}
 	
 	@Column(value="MOVE")
