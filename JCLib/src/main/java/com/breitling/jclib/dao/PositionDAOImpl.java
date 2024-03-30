@@ -60,25 +60,6 @@ public class PositionDAOImpl extends GenericDAO implements PositionDAO
 	}
 
 	@Override
-	public List<Position> findByGameId(long id) 
-	{
-		List<Position> list = new ArrayList<>();
-		
-		try
-		{
-			list = getJdbcTemplate().query(new StringBuilder().append("SELECT p.id,bitboardhash,fen,created ")
-					.append("FROM POSITIONS p, GAMEPOSITIONS gp WHERE p.id = gp.pos_id AND gp.game_id = ").append(id).toString(),
-				    Factory.Persistence.Position.getRowMapper());
-		}
-		catch (Exception e)
-		{
-			LOG.error(e.getMessage());
-		}
-			
-		return list;
-	}
-
-	@Override
 	public int addPosition(Position pos)
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("POSITIONS").usingGeneratedKeyColumns("ID");

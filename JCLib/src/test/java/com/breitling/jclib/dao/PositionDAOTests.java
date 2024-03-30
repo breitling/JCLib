@@ -78,16 +78,6 @@ public class PositionDAOTests
     }
     
     @Test
-    public void testFindByGameId_GoodId_List()
-    {
-    	var list = dao.findByGameId(1L);
-    	
-    	assertNotNull(list);
-    	assertEquals(1, list.size());
-    	assertEquals("rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", list.get(0).getFen());
-    }
-    
-    @Test
     public void testAddPosition_GoodPosition_OneRow()
     {
     	int rows = dao.addPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));

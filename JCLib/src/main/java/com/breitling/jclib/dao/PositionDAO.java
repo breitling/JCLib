@@ -11,7 +11,5 @@ public interface PositionDAO
 	
 	public List<Position> findByHash(long hash);
 	
-	public List<Position> findByGameId(long id);
-	
 	public int addPosition(Position pos);
 }
