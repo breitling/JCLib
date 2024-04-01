@@ -1,18 +1,11 @@
 package com.breitling.jclib.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
-
-@Table(name="GAMEPOSITIONS")
 public class GamePosition 
 {
 	private long id;
 	private Game game;
 	private Position position;
 	
-	@Id
-	@Column(value="ID")
 	public long getId() {
 		return id;
 	}

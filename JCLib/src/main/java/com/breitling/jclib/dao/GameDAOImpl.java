@@ -14,7 +14,6 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);
 	
-
 	@Override
 	public Optional<Game> findById(Long id)
 	{

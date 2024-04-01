@@ -1,10 +1,8 @@
 package com.breitling.jclib.persistence;
 
 import java.sql.Date;
-import java.util.Set;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -15,9 +13,6 @@ public class Position
 	private long bitBoardHash;
 	private String fen;
 	private Date created;
-	
-	@Transient
-	private Set<Move> moves;
 	
 	@Id
 	@Column(value="ID")
@@ -54,13 +49,5 @@ public class Position
 	
 	public void setCreated(Date created) {
 		this.created = created;
-	}
-	
-	public Set<Move> getMoves() {
-		return this.moves;
-	}
-	
-	public void setMoves(Set<Move> moves) {
-		this.moves = moves;
 	}
 }

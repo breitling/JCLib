@@ -107,6 +107,17 @@ public class Factory
 				return n;
 			}
 			
+			public static com.breitling.jclib.persistence.Note create(com.breitling.jclib.model.Note note)
+			{
+				var n = new com.breitling.jclib.persistence.Note();
+				
+				n.setId(note.getId());
+				n.setPositionId(note.getPosition().getId());
+				n.setNote(note.getNote());
+				
+				return n;
+			}
+			
 			public static RowMapper<com.breitling.jclib.persistence.Note> getRowMapper()
 			{
 				return new RowMapper<com.breitling.jclib.persistence.Note>() {
@@ -136,6 +147,18 @@ public class Factory
 				p.setBitBoardHash(BitBoard.generateBitBoardHash(fen));
 				p.setFen(fen);
 				p.setCreated(Date.valueOf(LocalDate.now()));
+				
+				return p;
+			}
+			
+			public static com.breitling.jclib.persistence.Position create(com.breitling.jclib.model.Position position)
+			{
+				var p = new com.breitling.jclib.persistence.Position();
+				
+				p.setId(position.getId());
+				p.setBitBoardHash(position.getBitBoardHash());
+				p.setFen(position.getFen());
+				p.setCreated(position.getCreated());
 				
 				return p;
 			}
@@ -203,6 +226,15 @@ public class Factory
 				return new com.breitling.jclib.model.Game();
 			}
 			
+			public static com.breitling.jclib.model.Game create(long id)
+			{
+				var g = new com.breitling.jclib.model.Game();
+				
+				g.setId(id);		// FOR LAZY LOADING
+				
+				return g;
+			}
+			
 			public static com.breitling.jclib.model.Game create(String w, String b, Result r, String moves) 
 			{
 				var g = new com.breitling.jclib.model.Game();
@@ -233,6 +265,71 @@ public class Factory
 			}
 		}
 		
+		public static class Note 
+		{
+			public static com.breitling.jclib.model.Note create(com.breitling.jclib.model.Position position, String note)
+			{
+				var n = new com.breitling.jclib.model.Note();
+				
+				n.setId(0L);
+				n.setPosition(position);
+				n.setNote(note);
+				
+				return n;
+			}
+			
+			public static com.breitling.jclib.model.Note create(com.breitling.jclib.persistence.Note note)
+			{
+				var n = new com.breitling.jclib.model.Note();
+				
+				n.setId(note.getId());
+				n.setPosition(Position.create(note.getPositionId())); 	// LAZY LOADED!
+				n.setNote(note.getNote());
+				
+				return n;
+			}
+			
+			private Note() {};
+		}
+		
+		public static class Position
+		{
+			public static com.breitling.jclib.model.Position create(long id)
+			{
+				var p = new com.breitling.jclib.model.Position();
+				
+				p.setId(id);	// FOR LAZY LOADING
+				
+				return p;
+			}
+			
+			public static com.breitling.jclib.model.Position create(String fen)
+			{
+				var p = new com.breitling.jclib.model.Position();
+				
+				p.setId(0L);
+				p.setBitBoardHash(BitBoard.generateBitBoardHash(fen));
+				p.setFen(fen);
+				p.setCreated(Date.valueOf(LocalDate.now()));
+				
+				return p;
+			}
+			
+			public static com.breitling.jclib.model.Position create(com.breitling.jclib.persistence.Position position)
+			{
+				var p = new com.breitling.jclib.model.Position();
+				
+				p.setId(position.getId());
+				p.setBitBoardHash(position.getBitBoardHash());
+				p.setFen(position.getFen());
+				p.setCreated(position.getCreated());
+				
+				return p;
+			}
+			
+			private Position() {};
+		}
+		
 		public static class Source
 		{
 			public static com.breitling.jclib.model.Source create(String name, String path)
@@ -256,6 +353,8 @@ public class Factory
 				
 				return s;
 			}
+			
+			private Source() {};
 		}
 		
 		private Model() {};
