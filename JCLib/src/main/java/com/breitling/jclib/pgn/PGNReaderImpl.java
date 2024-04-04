@@ -92,13 +92,25 @@ public class PGNReaderImpl implements PGNReader
     
     public List<String> getFENsFromMoves(Board b)
     {
-    	var board = b;
-    	
+    	try 
+    	{
+			return getFENsFromMoves(b, this.parseMoves());
+		}
+    	catch (PGNException e) 
+    	{
+    		LOG.error("Error generating FENs: failed to parse move list - {}", e.getMessage());
+            return new ArrayList<String>();
+		}
+    }
+    
+    public List<String> getFENsFromMoves(Board b, List<Move> moveList)
+    {
         List<String> fens = new ArrayList<>();
         
         try
         {
-            var list = parseMoves();
+        	var board = b;        	
+            var list = moveList;
             
             for (Move m : list)
             {
@@ -117,9 +129,9 @@ public class PGNReaderImpl implements PGNReader
             
             return fens;
         }
-        catch (PGNException pgne)
+        catch (Exception e)
         {
-        	LOG.error("Error generating FENs: {}", pgne.getMessage());
+        	LOG.error("Error generating FENs: {}", e.getMessage());
             return new ArrayList<String>();
         }
     }

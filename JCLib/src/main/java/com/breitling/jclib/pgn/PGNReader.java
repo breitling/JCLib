@@ -13,23 +13,23 @@ public interface PGNReader
 	
 	public List<String> getFENsFromMoves(Board b);
 	
+	public List<String> getFENsFromMoves(Board b, List<Move> list);
+	
 	public List<Game> getGames();
 	
 	public List<Move> getMoveList();
 	
 //  FACTORIES
 	
-	public static PGNReader createReader()
-	{
+	public static PGNReader createReader() {
 		return new PGNReaderImpl();
 	}
 	
-	public static PGNReader createReader(String moves)
-	{
+	public static PGNReader createReader(String moves) {
 		return new PGNReaderImpl(moves);
 	}
 	
-	public static PGNReader createReader(Source source) throws PGNException
+	public static PGNReader createReader(Source source) throws PGNException 
 	{
 		return new PGNReaderImpl(source);
 	}

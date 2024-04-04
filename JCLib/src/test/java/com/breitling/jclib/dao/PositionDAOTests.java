@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.PathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -25,6 +26,10 @@ import com.breitling.jclib.util.Factory;
 public class PositionDAOTests
 {
 	private PositionDAO dao;
+	
+	@Autowired
+    @SuppressWarnings("unused")
+    private DatabaseDAO dbDao;
     
     private static boolean initialized = false;
     

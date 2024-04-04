@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.PathResource;
 import org.springframework.jdbc.datasource.init.ScriptException;
@@ -25,6 +26,10 @@ import com.breitling.jclib.util.Factory;
 public class SourceDAOTests 
 {
     private SourceDAO dao;
+    
+	@Autowired
+    @SuppressWarnings("unused")
+    private DatabaseDAO dbDao;
     
     private static boolean initialized = false;
     
@@ -53,7 +58,7 @@ public class SourceDAOTests
 	@Test
 	public void testAddSource_GoodSource_OneRow() throws SQLException
 	{
-		int rows = dao.addSource(Factory.Persistence.Source.create("RJF60", "rjf60.pgn"));
+		int rows = dao.persistSource(Factory.Persistence.Source.create("RJF60", "rjf60.pgn"));
 		
 		assertEquals(1, rows);
 	}

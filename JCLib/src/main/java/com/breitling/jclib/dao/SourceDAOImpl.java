@@ -38,7 +38,7 @@ public class SourceDAOImpl extends GenericDAO implements SourceDAO
 	}
 
 	@Override
-	public int addSource(Source source) 
+	public int persistSource(Source source) 
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("SOURCES").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();

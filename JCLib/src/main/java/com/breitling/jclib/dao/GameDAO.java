@@ -12,4 +12,6 @@ public interface GameDAO
 	public List<Game> findGamesByPlayerName(String name);
 	
 	public List<Game> findGamesBySource(String source);
+	
+	public int persistGame(Game g);
 }

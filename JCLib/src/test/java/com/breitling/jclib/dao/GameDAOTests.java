@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.PathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -28,6 +29,10 @@ import com.breitling.jclib.util.Factory;
 public class GameDAOTests 
 {
     private GameDAO dao;
+    
+	@Autowired
+    @SuppressWarnings("unused")
+    private DatabaseDAO dbDao;
     
     private static boolean initialized = false;
 	
@@ -105,5 +110,27 @@ public class GameDAOTests
     	assertEquals("Jo To", g.getWhite());
     	assertEquals(Result.WHITE_WINS, Result.valueOfResult(g.getResult()));
     	assertEquals(4, g.getMoveCount());
+    }
+    
+    @Test
+    public void testPersistGame_GoodGame_1()
+    {
+    	var n = dao.persistGame(buildGame(new String[]{"Bob", "Bill", "1/2-1/2", "1. e4 e5 2. Nf3 Nc6 1/2-1/2"}));
+    	
+    	assertEquals(1, n);
+    	
+    	var list = dao.findGamesByPlayerName("Bill");
+    	
+    	assertEquals(1, list.size());
+    	assertEquals("Bob", list.get(0).getWhite());
+    	assertEquals("1/2-1/2", list.get(0).getResult());
+    	assertEquals("1. e4 e5 2. Nf3 Nc6 1/2-1/2", list.get(0).getMoves());
+    }
+    
+//  FACTORIES
+    
+    private Game buildGame(String... params)
+    {
+    	return Factory.Persistence.Game.create(params[0], params[1], params[2], params[3]);
     }
 }

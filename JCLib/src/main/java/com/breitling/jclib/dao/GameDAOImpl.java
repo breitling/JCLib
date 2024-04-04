@@ -1,11 +1,14 @@
 package com.breitling.jclib.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import com.breitling.jclib.persistence.Game;
 import com.breitling.jclib.util.Factory;
@@ -74,5 +77,30 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 		}
 		
 		return games;
+	}
+
+	@Override
+	public int persistGame(Game g) 
+	{
+		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("GAMES").usingGeneratedKeyColumns("ID");
+		Map<String,Object> params = new HashMap<>();
+		params.put("SOURCE_ID", g.getSourceId());
+		params.put("WHITE", g.getWhite());
+		params.put("WHITE_ELO", g.getWhiteELO());
+		params.put("BLACK", g.getBlack());
+		params.put("BLACK_ELO", g.getBlackELO());
+		params.put("EVENT", g.getEvent());
+		params.put("SITE", g.getSite());
+		params.put("EVENT_DATE", g.getEventDate());
+		params.put("TIME_CONTROL", g.getTimeControl());
+		params.put("ROUND", g.getRound());
+		params.put("GAME_DATE", g.getDate());
+		params.put("RESULT", g.getResult());
+		params.put("ECO", g.getEco());
+		params.put("FEN", g.getFEN());
+		params.put("MOVE_COUNT", g.getMoveCount());
+		params.put("MOVES", g.getMoves());
+		
+		return s.execute(params);
 	}
 }
