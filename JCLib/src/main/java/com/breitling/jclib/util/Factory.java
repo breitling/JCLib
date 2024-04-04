@@ -423,6 +423,8 @@ public class Factory
 			
 			return dao;
 		}
+		
+		private DAO(){};
 	}
 	
 	private Factory(){};
