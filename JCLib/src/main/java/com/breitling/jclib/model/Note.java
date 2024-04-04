@@ -1,10 +1,12 @@
 package com.breitling.jclib.model;
 
-public class Note 
+import com.breitling.jclib.util.Fetchable;
+
+public class Note extends Fetchable
 {
-	private long id;
+	private long     id;
 	private Position position;
-	private String note;
+	private String   note;
 	
 	public long getId() {
 		return id;

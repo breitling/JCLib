@@ -22,7 +22,7 @@ public class Game
 	private Integer round;
 	private Date date;
 	private String result;
-	private String eco;
+	private String eCO;
 	private String fEN;
 	private int moveCount;
 	private String moves;
@@ -146,12 +146,12 @@ public class Game
 	}
 	
 	@Column(value="ECO")	
-	public String getEco() {
-		return eco;
+	public String getECO() {
+		return eCO;
 	}
 	
 	public void setECO(String eco) {
-		this.eco = eco;
+		this.eCO = eco;
 	}
 	
 	@Column(value="FEN")	

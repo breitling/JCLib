@@ -3,7 +3,12 @@ package com.breitling.jclib.model;
 import java.sql.Date;
 import java.util.Set;
 
-public class Position 
+import com.breitling.jclib.annotation.Fetch;
+import com.breitling.jclib.util.FetchType;
+import com.breitling.jclib.util.Fetchable;
+
+@Fetch(type = FetchType.LAZY)
+public class Position extends Fetchable
 {
 	private long id;
 	private long bitBoardHash;

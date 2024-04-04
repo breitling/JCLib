@@ -1,23 +1,21 @@
 package com.breitling.jclib.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import com.breitling.jclib.annotation.Fetch;
+import com.breitling.jclib.util.FetchType;
+import com.breitling.jclib.util.Fetchable;
 
-@Table(name="POSITIONMOVES")
-public class Move 
+public class Move extends Fetchable
 {
-	private long id;
+	private long     id;
+	@Fetch(type=FetchType.LAZY)
 	private Position position;
-	private String move;
-	private int games;
-	private int averageELO;
-	private int whiteWinPercent;
-	private int blackWinPercent;
-	private int drawPercent;
+	private String   move;
+	private int      games;
+	private int      averageELO;
+	private int      whiteWinPercent;
+	private int      blackWinPercent;
+	private int      drawPercent;
 	
-    @Id
-    @Column(value="ID")
 	public long getId() {
 		return id;
 	}
@@ -34,7 +32,6 @@ public class Move
 		this.position = p;
 	}
 	
-	@Column(value="MOVE")
 	public String getMove() {
 		return move;
 	}
@@ -43,7 +40,6 @@ public class Move
 		this.move = move;
 	}
 	
-	@Column(value="GAMES")	
 	public int getGames() {
 		return games;
 	}
@@ -52,7 +48,6 @@ public class Move
 		this.games = games;
 	}
 	
-	@Column(value="AVERAGE_ELO")	
 	public int getAverageELO() {
 		return averageELO;
 	}
@@ -61,7 +56,6 @@ public class Move
 		this.averageELO = averageELO;
 	}
 	
-	@Column(value="WHITE_WIN_PECENTAGE")	
 	public int getWhiteWinPercent() {
 		return whiteWinPercent;
 	}
@@ -70,7 +64,6 @@ public class Move
 		this.whiteWinPercent = whiteWinPercent;
 	}
 	
-	@Column(value="BLACK_WIN_PERCENTAGE")	
 	public int getBlackWinPercent() {
 		return blackWinPercent;
 	}
@@ -79,7 +72,6 @@ public class Move
 		this.blackWinPercent = blackWinPercent;
 	}
 	
-	@Column(value="DRAW_PERCENTAGE")	
 	public int getDrawPercent() {
 		return drawPercent;
 	}

@@ -96,7 +96,7 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 		params.put("ROUND", g.getRound());
 		params.put("GAME_DATE", g.getDate());
 		params.put("RESULT", g.getResult());
-		params.put("ECO", g.getEco());
+		params.put("ECO", g.getECO());
 		params.put("FEN", g.getFEN());
 		params.put("MOVE_COUNT", g.getMoveCount());
 		params.put("MOVES", g.getMoves());

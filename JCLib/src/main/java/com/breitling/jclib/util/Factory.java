@@ -223,14 +223,21 @@ public class Factory
 		{
 			public static com.breitling.jclib.model.Game create()
 			{
-				return new com.breitling.jclib.model.Game();
+				var g = new com.breitling.jclib.model.Game();
+				
+				g.setId(0L);
+				
+				g.setFetchType(FetchType.LAZY);
+				
+				return g;
 			}
 			
 			public static com.breitling.jclib.model.Game create(long id)
 			{
 				var g = new com.breitling.jclib.model.Game();
 				
-				g.setId(id);		// FOR LAZY LOADING
+				g.setId(id);
+				g.setFetchType(FetchType.LAZY);
 				
 				return g;
 			}
@@ -244,7 +251,9 @@ public class Factory
 				g.setBlack(b);
 				g.setResult(r);
 				g.setDate(Date.valueOf(LocalDate.now()));
-				g.setMoves(moves);
+				g.setMoves(moves);				
+				
+				g.setFetchType(FetchType.LAZY);
 				
 				return g;
 			}
@@ -254,12 +263,24 @@ public class Factory
 				var g = new com.breitling.jclib.model.Game();
 				
 				g.setId(game.getId());
+				g.setSource(Source.create(game.getSourceId()));
 				g.setWhite(game.getWhite());
+				g.setWhiteELO(game.getWhiteELO());
 				g.setBlack(game.getBlack());
+				g.setBlackELO(game.getBlackELO());
+				g.setEvent(game.getEvent());
+				g.setSite(game.getSite());
+				g.setEventDate(game.getEventDate());
+				g.setTimeControl(game.getTimeControl());
+				g.setRound(game.getRound());
 				g.setResult(Result.valueOf(game.getResult()));
 				g.setDate(game.getDate());
+				g.setECO(game.getECO());
+				g.setFEN(game.getFEN());
 				g.setMoveCount(game.getMoveCount());
 				g.setMoves(game.getMoves());
+				
+				g.setFetchType(FetchType.LOADED);
 				
 				return g;
 			}
@@ -267,6 +288,19 @@ public class Factory
 		
 		public static class Note 
 		{
+			public static com.breitling.jclib.model.Note create(long pos_id, String note)
+			{
+				var n = new com.breitling.jclib.model.Note();
+				
+				n.setId(0L);
+				n.setPosition(Position.create(pos_id));
+				n.setNote(note);
+				
+				n.setFetchType(FetchType.LAZY);
+				
+				return n;
+			}
+			
 			public static com.breitling.jclib.model.Note create(com.breitling.jclib.model.Position position, String note)
 			{
 				var n = new com.breitling.jclib.model.Note();
@@ -274,6 +308,8 @@ public class Factory
 				n.setId(0L);
 				n.setPosition(position);
 				n.setNote(note);
+				
+				n.setFetchType(FetchType.LOADED);
 				
 				return n;
 			}
@@ -283,8 +319,10 @@ public class Factory
 				var n = new com.breitling.jclib.model.Note();
 				
 				n.setId(note.getId());
-				n.setPosition(Position.create(note.getPositionId())); 	// LAZY LOADED!
+				n.setPosition(Position.create(note.getPositionId()));
 				n.setNote(note.getNote());
+				
+				n.setFetchType(FetchType.LAZY);
 				
 				return n;
 			}
@@ -298,7 +336,8 @@ public class Factory
 			{
 				var p = new com.breitling.jclib.model.Position();
 				
-				p.setId(id);	// FOR LAZY LOADING
+				p.setId(id);
+				p.setFetchType(FetchType.LAZY);
 				
 				return p;
 			}
@@ -312,6 +351,8 @@ public class Factory
 				p.setFen(fen);
 				p.setCreated(Date.valueOf(LocalDate.now()));
 				
+				p.setFetchType(FetchType.LOADED);
+				
 				return p;
 			}
 			
@@ -324,6 +365,8 @@ public class Factory
 				p.setFen(position.getFen());
 				p.setCreated(position.getCreated());
 				
+				p.setFetchType(FetchType.LOADED);
+				
 				return p;
 			}
 			
@@ -332,6 +375,16 @@ public class Factory
 		
 		public static class Source
 		{
+			public static com.breitling.jclib.model.Source create(long id)
+			{
+				var s = new com.breitling.jclib.model.Source();
+				
+				s.setId(id);
+				s.setFetchType(FetchType.LAZY);
+				
+				return s;
+			}
+			
 			public static com.breitling.jclib.model.Source create(String name, String path)
 			{
 				var s = new com.breitling.jclib.model.Source();
@@ -339,6 +392,8 @@ public class Factory
 				s.setId(0L);
 				s.setName(name);
 				s.setPath(path);
+				
+				s.setFetchType(FetchType.LOADED);
 				
 				return s;
 			}
@@ -350,6 +405,8 @@ public class Factory
 				s.setId(source.getId());
 				s.setName(source.getName());
 				s.setPath(source.getPath());
+				
+				s.setFetchType(FetchType.LOADED);
 				
 				return s;
 			}

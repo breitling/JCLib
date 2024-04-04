@@ -1,6 +1,11 @@
 package com.breitling.jclib.model;
 
-public class Source 
+import com.breitling.jclib.annotation.Fetch;
+import com.breitling.jclib.util.FetchType;
+import com.breitling.jclib.util.Fetchable;
+
+@Fetch(type=FetchType.LAZY)
+public class Source extends Fetchable
 {
 	private long id;
 	private String name;

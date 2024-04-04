@@ -10,12 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import com.breitling.jclib.persistence.Note;
-import com.breitling.jclib.persistence.Position;
 import com.breitling.jclib.util.Factory;
 
 public class NoteDAOImpl extends GenericDAO implements NoteDAO
 {
-	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(NoteDAOImpl.class);
 
 	@Override

@@ -1,9 +1,14 @@
 package com.breitling.jclib.model;
 
-public class GamePosition 
+import com.breitling.jclib.annotation.Fetch;
+import com.breitling.jclib.util.FetchType;
+
+public class GamePosition
 {
-	private long id;
-	private Game game;
+	private long     id;
+	@Fetch(type=FetchType.LAZY)
+	private Game     game;
+	@Fetch(type=FetchType.LAZY)
 	private Position position;
 	
 	public long getId() {

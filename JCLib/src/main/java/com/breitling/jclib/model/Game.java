@@ -3,27 +3,32 @@ package com.breitling.jclib.model;
 import java.sql.Date;
 import java.util.Set;
 
+import com.breitling.jclib.annotation.Fetch;
 import com.breitling.jclib.chess.Result;
+import com.breitling.jclib.util.FetchType;
+import com.breitling.jclib.util.Fetchable;
 
-public class Game 
+@Fetch(type = FetchType.LAZY)
+public class Game extends Fetchable
 {
-	private long id;
-	private Source source;
-	private String white;
-	private String whiteELO;
-	private String black;
-	private String blackELO;
-	private String event;
-	private String site;
-	private Date eventDate;
-	private String timeControl;
+	private long    id;
+	@Fetch(type=FetchType.LAZY)
+	private Source  source;
+	private String  white;
+	private String  whiteELO;
+	private String  black;
+	private String  blackELO;
+	private String  event;
+	private String  site;
+	private Date    eventDate;
+	private String  timeControl;
 	private Integer round;
-	private Date date;
-	private Result result;
-	private String eco;
-	private String fEN;
-	private int moveCount;
-	private String moves;
+	private Date    date;
+	private Result  result;
+	private String  eCO;
+	private String  fEN;
+	private int     moveCount;
+	private String  moves;
 	
 	private Set<Position> positions;
 	
@@ -37,11 +42,11 @@ public class Game
 		this.id = id;
 	}
 	
-	public Source getSourceId() {
+	public Source getSource() {
 		return source;
 	}
 
-	public void setSourceId(Source source) {
+	public void setSource(Source source) {
 		this.source = source;
 	}
 
@@ -133,12 +138,12 @@ public class Game
 		this.result = result;
 	}
 	
-	public String getEco() {
-		return eco;
+	public String getECO() {
+		return eCO;
 	}
 	
 	public void setECO(String eco) {
-		this.eco = eco;
+		this.eCO = eco;
 	}
 	
 	public String getFEN() {
