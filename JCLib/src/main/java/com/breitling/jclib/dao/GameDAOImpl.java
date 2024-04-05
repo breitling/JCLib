@@ -80,7 +80,7 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 	}
 
 	@Override
-	public int persistGame(Game g) 
+	public Number persistGame(Game g) 
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("GAMES").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();
@@ -101,6 +101,6 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 		params.put("MOVE_COUNT", g.getMoveCount());
 		params.put("MOVES", g.getMoves());
 		
-		return s.execute(params);
+		return s.executeAndReturnKey(params);
 	}
 }

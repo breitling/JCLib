@@ -8,5 +8,5 @@ public interface SourceDAO
 {
 	public Optional<Source> findById(long id);
 	
-	public int persistSource(Source source);
+	public Number persistSource(Source source);
 }

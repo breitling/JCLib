@@ -85,8 +85,8 @@ public class PositionDAOTests
     @Test
     public void testAddPosition_GoodPosition_OneRow()
     {
-    	int rows = dao.addPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));
+    	var id = dao.addPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));
     	
-		assertEquals(1, rows);
+		assertEquals(2, id.longValue());
     }
 }

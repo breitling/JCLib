@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.dao.GameDAO;
 import com.breitling.jclib.dao.GameDAOImpl;
+import com.breitling.jclib.dao.SourceDAO;
+import com.breitling.jclib.dao.SourceDAOImpl;
 import com.breitling.jclib.model.Game;
 import com.breitling.jclib.model.Source;
 import com.breitling.jclib.pgn.PGNReader;
@@ -18,17 +20,19 @@ public class GameServiceImpl implements GameService
 {
 
 	@Override
-	public void saveGamesFromSource(String path)
+	public void saveGamesFromPath(String path)
 	{
-		saveGamesFromSource(getNameFromPath(path), path);
+		saveGamesFromSource(Factory.Model.Source.create(getNameFromPath(path), path));
 	}
 
 	@Override
-	public void saveGamesFromSource(String name, String path) 
+	public void saveGamesFromSource(Source source) 
 	{
 		try
 		{
-			var source = Factory.Model.Source.create(name, path);
+			if (source.getId() == 0)
+				persistToDB(source);
+			
 			var reader = PGNReader.createReader(source);		
 			var games = reader.getGames();
 			
@@ -61,7 +65,6 @@ public class GameServiceImpl implements GameService
 		}
 		catch (Exception e)
 		{
-			
 		}
 	}
 	
@@ -73,20 +76,25 @@ public class GameServiceImpl implements GameService
 		return parts[parts.length-1].substring(0, parts[parts.length-1].indexOf("."));
 	}
 	
-	private void persistToDB(Source source, Game g)
+	private void persistToDB(Source source)
 	{
-		 var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, source.getName());
-		 var rc = dao.persistGame(Factory.Persistence.Game.create(g));
-		 
-		 if (rc != 1)
-		 {
-		 }
-		 else
-		 {
-		 }
+		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, source.getName());
+		var id = dao.persistSource(Factory.Persistence.Source.create(source));
+		
+		source.setId(id.longValue());
 	}
 	
-	private void persistToDB(Source source, List<Move> moves, List<String >fens)
+	private void persistToDB(Source source, Game g)
 	{
+		 var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, source.getName());		 
+		 var p = Factory.Persistence.Game.create(g);
+		 
+		 p.setSourceId(source.getId());
+		 dao.persistGame(p);
+	}
+	
+	private void persistToDB(Source source, List<Move> moves, List<String> fens)
+	{
+		
 	}
 }

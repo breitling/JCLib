@@ -38,13 +38,13 @@ public class SourceDAOImpl extends GenericDAO implements SourceDAO
 	}
 
 	@Override
-	public int persistSource(Source source) 
+	public Number persistSource(Source source) 
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("SOURCES").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();
 		params.put("NAME", source.getName());
 		params.put("PATH", source.getPath());
 		
-		return s.execute(params);
+		return s.executeAndReturnKey(params);
 	}
 }

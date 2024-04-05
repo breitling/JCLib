@@ -38,13 +38,13 @@ public class GamePositionDAOImpl extends GenericDAO implements GamePositionDAO
 	}
 
 	@Override
-	public int addRecord(long gameId, long posId) 
+	public Number persistRecord(long gameId, long posId) 
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("GAMEPOSITIONS").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();
 		params.put("GAME_ID", gameId);
 		params.put("POS_ID", posId);
 		
-		return s.execute(params);
+		return s.executeAndReturnKey(params);
 	}
 }

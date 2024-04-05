@@ -13,5 +13,5 @@ public interface GameDAO
 	
 	public List<Game> findGamesBySource(String source);
 	
-	public int persistGame(Game g);
+	public Number persistGame(Game g);
 }

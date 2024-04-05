@@ -196,6 +196,16 @@ public class Factory
 				return s;
 			}
 			
+			public static com.breitling.jclib.persistence.Source create(com.breitling.jclib.model.Source source)
+			{
+				var s = new com.breitling.jclib.persistence.Source();
+
+				s.setName(source.getName());
+				s.setPath(source.getPath());
+				
+				return s;
+			}
+			
 			public static RowMapper<com.breitling.jclib.persistence.Source> getRowMapper()
 			{
 				return new RowMapper<com.breitling.jclib.persistence.Source>() {

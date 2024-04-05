@@ -8,5 +8,5 @@ public interface NoteDAO
 {
 	public List<Note> findByPositionId(long posId);
 	
-	public int addNote(long posId, String note);
+	public Number persistNote(long posId, String note);
 }

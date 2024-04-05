@@ -58,8 +58,8 @@ public class SourceDAOTests
 	@Test
 	public void testAddSource_GoodSource_OneRow() throws SQLException
 	{
-		int rows = dao.persistSource(Factory.Persistence.Source.create("RJF60", "rjf60.pgn"));
+		Number id = dao.persistSource(Factory.Persistence.Source.create("RJF60", "rjf60.pgn"));
 		
-		assertEquals(1, rows);
+		assertEquals(2, id.longValue());
 	}
 }

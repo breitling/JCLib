@@ -36,13 +36,13 @@ public class NoteDAOImpl extends GenericDAO implements NoteDAO
 	}
 
 	@Override
-	public int addNote(long posId, String note)
+	public Number persistNote(long posId, String note)
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("NOTES").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();
 		params.put("POS_ID", posId);
 		params.put("NOTE", note);
 		
-		return s.execute(params);
+		return s.executeAndReturnKey(params);
 	}
 }
