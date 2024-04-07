@@ -46,6 +46,8 @@ public class PositionDAOTests
 		}
 	}
     
+//  TEST CASES
+	
     @Test
     public void testFindById_GoodId_Position()
     {
@@ -85,8 +87,8 @@ public class PositionDAOTests
     @Test
     public void testAddPosition_GoodPosition_OneRow()
     {
-    	var id = dao.addPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));
+    	var id = dao.persistPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));
     	
-		assertEquals(2, id.longValue());
+		assertEquals(3, id.longValue());
     }
 }

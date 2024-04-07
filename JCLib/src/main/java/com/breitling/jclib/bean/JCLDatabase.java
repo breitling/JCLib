@@ -1,5 +1,8 @@
 package com.breitling.jclib.bean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -10,31 +13,47 @@ public class JCLDatabase
 {
 	private static Logger LOG = LoggerFactory.getLogger(JCLDatabase.class);
 	
+	private static Map<String,DriverManagerDataSource> cache = new HashMap<>();
+	
 	public static DataSource createDataSource(String dbname)
-	{
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+	{		
+        DriverManagerDataSource dataSource = cache.get(dbname);
         
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl(new StringBuilder("jdbc:h2:./").append(dbname).toString());
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
+        if (dataSource == null)
+        {
+        	dataSource = new DriverManagerDataSource();
         
-        LOG.info("JCLDatabase: created data source for {} at {}", dbname, dataSource.getUrl());
+	        dataSource.setDriverClassName("org.h2.Driver");
+	        dataSource.setUrl(new StringBuilder("jdbc:h2:./").append(dbname).toString());
+	        dataSource.setUsername("sa");
+	        dataSource.setPassword("");
+	        
+	        LOG.info("JCLDatabase: created data source for {} at {}", dbname, dataSource.getUrl());
+	        
+	        cache.put(dbname, dataSource);
+        }
 
         return dataSource;
 	}
 	
 	public static DataSource createInMemoryDataSource(String dbname)
 	{
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        DriverManagerDataSource dataSource = cache.get(dbname);
         
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl(new StringBuilder("jdbc:h2:mem:").append(dbname).toString());
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
+        if (dataSource == null)
+        {
+	        dataSource = new DriverManagerDataSource();
+	        
+	        dataSource.setDriverClassName("org.h2.Driver");
+	        dataSource.setUrl(new StringBuilder("jdbc:h2:mem:").append(dbname).toString());
+	        dataSource.setUsername("sa");
+	        dataSource.setPassword("");
+	        
+	        LOG.info("JCLDatabase: created in-memory data source for {} at {}", dbname, dataSource.getUrl());
+	        
+	        cache.put(dbname, dataSource);
+        }
         
-        LOG.info("JCLDatabase: created in-memory data source for {} at {}", dbname, dataSource.getUrl());
-
         return dataSource;
 	}
 }

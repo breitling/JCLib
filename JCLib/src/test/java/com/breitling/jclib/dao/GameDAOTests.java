@@ -50,6 +50,8 @@ public class GameDAOTests
 		}
 	}
     
+//  TEST CASES
+	
     @Test
     public void testFindGamesByPlayerName_BadName_EmptyList()
     {
@@ -117,7 +119,7 @@ public class GameDAOTests
     {
     	var n = dao.persistGame(buildGame(new String[]{"Bob", "Bill", "1/2-1/2", "1. e4 e5 2. Nf3 Nc6 1/2-1/2"}));
     	
-    	assertEquals(1, n);
+    	assertEquals(4, n.longValue());
     	
     	var list = dao.findGamesByPlayerName("Bill");
     	

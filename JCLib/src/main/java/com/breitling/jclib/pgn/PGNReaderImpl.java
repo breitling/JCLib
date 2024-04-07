@@ -108,21 +108,18 @@ public class PGNReaderImpl implements PGNReader
         List<String> fens = new ArrayList<>();
         
         try
-        {
-        	var board = b;        	
-            var list = moveList;
-            
-            for (Move m : list)
+        {     	
+            for (Move m : moveList)
             {
             	if (m.getNumber() > 0)
             	{
-            		board.move(m.whitemove);
-            		fens.add(board.toFEN());
+            		b.move(m.whitemove);
+            		fens.add(b.toFEN());
             		
             		if (m.getBlackmove().length() > 0)
             		{
-            			board.move(m.blackmove);
-            			fens.add(board.toFEN());
+            			b.move(m.blackmove);
+            			fens.add(b.toFEN());
             		}
             	}
             }

@@ -36,6 +36,7 @@ public class Board
     private static final Map<String,Integer> squareToIndex;
     
     private static final int NO_SQUARE = (-1);
+    private static final int NO_VALUE  = (-1);
     
     private static final int RANK = 1, FILE = 2;
     private static final int WHITE = 1, BLACK = 0;
@@ -171,7 +172,7 @@ public class Board
         	castle(whoseTurnIsIt, "O-O-O");
         else
     	if ("RNBQK".indexOf(c) >= 0)
-    		pieceMove(whoseTurnIsIt, notation);
+    		pieceMove(whoseTurnIsIt, c, notation);
     	else
     	if ("abcedfgh".indexOf(c) >= 0)
     		pawnMove(whoseTurnIsIt, notation);
@@ -230,15 +231,32 @@ public class Board
     
     public void placePiece(Color c, Piece p, int at)
     {
+    	var b = BitBoard.OfSquare(at);
+    	
    		if (c == Color.WHITE)
-   			whiteBitBoards[p.ordinal()] |= BitBoard.OfSquare(at);    			
+   		{
+   			whiteBitBoards[0] ^= b;
+   			whiteBitBoards[p.ordinal()] |= b;
+   		}
    		else
-   			blackBitBoards[p.ordinal()] |= BitBoard.OfSquare(at);  
+   		{
+   			blackBitBoards[0] ^= b;
+   			blackBitBoards[p.ordinal()] |= b;
+   		}
     }
     
     public Boolean pieceAt(Color c, Piece p, int at)
     {
     	return (bitBoards(c, p.ordinal()) & BitBoard.OfSquare(at)) != 0;
+    }
+    public void removePawnAt(Color c, int at)
+    {
+    	var b = BitBoard.OfSquare(at);
+    	
+   		if (c == Color.WHITE)
+   			whiteBitBoards[0] ^= b;
+   		else
+   			blackBitBoards[0] ^= b;
     }
     
     public void resetToStartingPosition()
@@ -388,9 +406,9 @@ public class Board
     	throw new RuntimeException(new StringBuilder("Error: no piece found at ").append(squares[to]).toString());
     }
     
-    private List<String> findStartingSquares(long bitboard, int color, int index)
+    private List<Integer> findStartingSquares(long bitboard, int color, int index)
     {
-    	List<String> list = new ArrayList<>();
+    	List<Integer> list = new ArrayList<>();
     		
     	for (int i = 0; i < NUM_OF_SQUARES; i++)
     	{
@@ -400,13 +418,28 @@ public class Board
     			
     			if ((sbb & BitBoard.OfSquare(i)) != 0)
     			{
-    				list.add(squares[i]);
+    				list.add(i);
     			}
     		}
     	}
     	
     	return list;
-    }    
+    }
+    
+    private Boolean isPieceAt(int color, int at)
+    {
+    	long b = 0;
+    	
+    	if (color == WHITE)
+			b = whiteBitBoards[0] | whiteBitBoards[1] | whiteBitBoards[2] | whiteBitBoards[3] | whiteBitBoards[4] | whiteBitBoards[5];
+		else
+			b = blackBitBoards[0] | blackBitBoards[1] | blackBitBoards[2] | blackBitBoards[3] | blackBitBoards[4] | blackBitBoards[5];
+		
+		if ((b & BitBoard.OfSquare(at)) != 0) // SQUARE HAS A PIECE ON IT
+			return true;
+		else
+			return false;
+    }
     
 //  NOTE: O-O O-O-O 0-0 0-0-0    
     private void castle(int c, String notation)
@@ -529,9 +562,22 @@ public class Board
     	Piece p = findPieceAt(c, starting);
     	
     	if (capture == 0)
+    	{
     		movePiece(c, p, starting, target);
+    	}
     	else
-    		capturePiece(c, p, starting, target);
+    	{
+    		if (p == Piece.PAWN && isPieceAt(WHITE-color, target) == false && 
+    			pieceAt(c.getOppositeColor(), Piece.PAWN, target+(delta*8)))
+    		{
+    			movePiece(c, p, starting, target);
+    			removePawnAt(c.getOppositeColor(), target+(delta*8));
+    		}
+    		else
+    		{
+    			capturePiece(c, p, starting, target);
+    		}
+    	}
     	
     	if (promote != null)
     		placePiece(c, promote, target);
@@ -544,23 +590,21 @@ public class Board
     }
 
 //  NOTE: Bg5 Rxd5 R1a4 Rfe1 Qh4e1 R1xa5 Rexa5 Qh4xe1 Qh4-e1
-    private void pieceMove(int color, String notation)
+    private void pieceMove(int color, char piece, String notation)
     {
     	int n;
-    	int rank = -1;
-    	int file = -1;
     	int target = NO_SQUARE;
     	int starting = NO_SQUARE;
     	int capture = 0;
     	
     	int len = notation.length();
     	
-    	Piece p = Piece.valueOfPiece(notation.charAt(0));
+    	Piece p = Piece.valueOfPiece(piece);
 
     	if ((n = notation.indexOf("x")) >= 0)
 			capture = n;
     	
-    	target = squareToIndex.get(notation.substring(notation.length()-2));
+    	target = squareToIndex.get(notation.substring(len-2));
     	
     	if (notation.contains("-") || (capture > 0 && len == 6))
     		starting = squareToIndex.get(notation.substring(1,3));
@@ -568,35 +612,49 @@ public class Board
     	if (starting == NO_SQUARE)
     	{
 	    	long bitboard = BitBoard.getPieceBitBoard(p, target);
-
-	    	if ("12345678".indexOf(notation.charAt(2)) >= 0)
-	    		rank = notation.charAt(2);
-	    	
-	    	if ("abcdefgh".indexOf(notation.charAt(1)) >= 0)
-	    		file = notation.charAt(1);
-	    	
-	    	List<String> list = findStartingSquares(bitboard, color, p.ordinal());
+	    	List<Integer> list = findStartingSquares(bitboard, color, p.ordinal());
 	    	
 	    	if (list.size() == 1)
 	    	{
-	    		starting = squareToIndex.get(list.get(0));	    		
+	    		starting = list.get(0);
 	    	}
 	    	else
 	    	{
-	    		for (String s : list)
+	    		int rank = NO_VALUE;
+	    		int file = NO_VALUE;
+	        	
+	    		if (len == 4 || (capture > 0 && len == 5))
 	    		{
-	    			if (rank >= 0 && s.charAt(1) == rank)
+			    	if ("12345678".indexOf(notation.charAt(1)) >= 0)
+			    		rank = (notation.charAt(1) - '1') * 8;
+			    	
+			    	if ("abcdefgh".indexOf(notation.charAt(1)) >= 0)
+			    		file = notation.charAt(1) - 'a';
+	    		}
+		    	
+	    		for (int i : list)
+	    		{
+	    			if (rank >= 0 && ((i/8) * 8) == rank)
 	    			{
-	    				starting = squareToIndex.get(s);
+	    				starting = i;
 	    				if (isValidMove(color, p, starting, target, RANK))
 	    					break;
 	    			}
-	    			if (file >= 0 && s.charAt(0) == file)
+	    			if (file >= 0 && (i%8) == file)
 	    			{
-	    				starting = squareToIndex.get(s);
+	    				starting = i;
 	    				if (isValidMove(color, p, starting, target, FILE))
 	    					break;
 	    			}
+	    		}
+	    		
+	    		for (int i : list)
+	    		{
+	    			if (starting != NO_SQUARE)
+	    				break;
+	    			
+	    			if (isValidMove(color, p, i, target))
+	    				starting = i;
 	    		}
 	    	}
     	}
@@ -619,10 +677,49 @@ public class Board
 		enPassantTargetSquare = "-";
     }
     
+    private boolean isValidMove(int c, Piece p, int from, int to)
+    {
+    	boolean rc = true;
+
+    	switch (p)
+    	{
+    	case Piece.ROOK:
+    		 rc = isValidMove(c, p, from, to, Math.abs(from - to) < 8 ? RANK : FILE);
+    		 break;
+    		 
+    	case Piece.QUEEN:
+    		 int tr = to/8;
+    		 int tf = to%8;
+    		 int fr = from/8;
+    		 int ff = from%8;
+    		 
+    		 if (tr == fr)
+    			 rc = isValidMove(c, Piece.ROOK, from, to, RANK);
+    		 else
+    		 if (tf == ff)
+    			 rc = isValidMove(c, Piece.ROOK, from, to, FILE);
+    		 else
+    			 rc = isValidMove(c, p, from, to, 0);
+    		 break;
+    		 
+    	default:
+    		 break;
+    	}
+    	
+    	return rc;
+    }
+    
     private boolean isValidMove(int color, Piece p, int from, int to, int rankorfile)
     {
     	boolean rc = true;
     	
+		if (from > to)
+		{
+			int n = from;
+			from = to;
+			to = n;
+		}
+		
     	if (p == Piece.ROOK)
     	{
     		int delta = 1;
@@ -630,20 +727,53 @@ public class Board
     		if (rankorfile == FILE)
     			delta = 8;
     			
-    		long b = 0;
-    		
-    		for (int n = from+1; n < to; n = n + delta)
+    		for (int n = from+delta; n < to; n = n + delta)
     		{
-    			if (color == WHITE)
-    				b = whiteBitBoards[0] | whiteBitBoards[1] | whiteBitBoards[2] | whiteBitBoards[4] | whiteBitBoards[5];
-    			else
-    				b = blackBitBoards[0] | blackBitBoards[1] | blackBitBoards[2] | blackBitBoards[4] | blackBitBoards[5];
-    			
-    			if ((b & BitBoard.OfSquare(n)) != 0) // SQUARE HAS A PIECE ON IT
+    			if (isPieceAt(color, n) || isPieceAt(WHITE-color, n))
     			{
     				rc = false;
     				break;
     			}
+    		}
+    	}
+    	else if (p == Piece.QUEEN)
+    	{
+    		int d1 = from + 9;
+    		int d2 = from + 7;
+    		
+    		while (d1 != to && d2 != to && (d1 < NUM_OF_SQUARES || d2 < NUM_OF_SQUARES))
+    		{
+    			d1 += 9;
+    			d2 += 7;
+    		}
+    		
+    		if (d1 == to)
+    		{
+    			while (from < to)
+    			{
+    				if (isPieceAt(color, from) || isPieceAt(WHITE-color, from))
+    				{
+    					rc = false;
+    					break;
+    				}
+    				from += 9;
+    			}
+    		}
+    		else if (d2 == to)
+    		{
+    			while (from < to)
+    			{
+    				if (isPieceAt(color, from) || isPieceAt(WHITE-color, from))
+    				{
+    					rc = false;
+    					break;
+    				}
+    				from += 7;
+    			}
+    		}
+    		else
+    		{
+    			rc = false;
     		}
     	}
     	

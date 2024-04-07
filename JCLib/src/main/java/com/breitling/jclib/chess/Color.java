@@ -24,6 +24,14 @@ public enum Color {
 		return this.color;
 	}
 	
+	public Color getOppositeColor()
+	{
+		if (this.color.equals("White"))
+			return BLACK;
+		else
+			return WHITE;
+	}
+	
 	public static Color valueOfColor(String c) {
 		return map.get(c);
 	}

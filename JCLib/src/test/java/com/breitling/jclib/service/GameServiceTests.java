@@ -1,7 +1,6 @@
-package com.breitling.jclib.dao;
+package com.breitling.jclib.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -17,49 +16,46 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.breitling.jclib.dao.GameDAO;
+import com.breitling.jclib.dao.GameDAOImpl;
+import com.breitling.jclib.dao.GenericDAO;
+import com.breitling.jclib.dao.SourceDAO;
+import com.breitling.jclib.dao.SourceDAOImpl;
 import com.breitling.jclib.util.Factory;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class GamePositionDAOTests 
+public class GameServiceTests 
 {
-	private GamePositionDAO dao;
-	
 	@Autowired
-    @SuppressWarnings("unused")
-    private DatabaseDAO dbDao;
+	private GameService service;
     
     private static boolean initialized = false;
     
 	@BeforeEach
 	public void setupForTest() throws SQLException
 	{
-		dao = (GamePositionDAO) Factory.DAO.createDAO(GamePositionDAOImpl.class, "positions", Factory.DAO.INMEMORY);
+		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60"); //, Factory.DAO.INMEMORY);
 		
 		if (!initialized)
 		{
 			Connection conn = ((GenericDAO) dao).getDataSource().getConnection();
-			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/positions.sql")));
+			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/games.schema")));
 			initialized = true;
 		}
 	}
-
-    @Test
-    public void testFindByGameId_GoodId_List()
-    {
-    	var list = dao.findByGameId(1L);
-    	
-    	assertNotNull(list);
-    	assertEquals(1, list.size());
-    	assertEquals("rnbkqbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", list.get(0).getFen());
-    }
-    
-    @Test
-    public void testAddPosition_GoodPosition_OneRow()
-    {
-    	Number id = dao.persistRecord(1,2);
-    	
-		assertEquals(2, id.longValue());
-    }
+	
+//  TEST CASES
+	
+	@Test
+	public void testSaveGamesFromSource_GoodSource_Objects()
+	{
+		service.saveGamesFromSource(Factory.Model.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
+		
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60"); //, Factory.DAO.INMEMORY);
+		var games = dao.findGamesBySource("RJF60");
+		
+		assertEquals(60, games.size());
+	}
 }

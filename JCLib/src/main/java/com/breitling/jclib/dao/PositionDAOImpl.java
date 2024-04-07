@@ -60,7 +60,7 @@ public class PositionDAOImpl extends GenericDAO implements PositionDAO
 	}
 
 	@Override
-	public Number addPosition(Position pos)
+	public Number persistPosition(Position pos)
 	{
 		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("POSITIONS").usingGeneratedKeyColumns("ID");
 		Map<String,Object> params = new HashMap<>();

@@ -52,7 +52,7 @@ public class Factory
 				g.setId(game.getId());
 				g.setWhite(game.getWhite());
 				g.setBlack(game.getBlack());
-				g.setResult(game.getResult().name());
+				g.setResult(game.getResult().getValue());
 				g.setDate(game.getDate());
 				g.setMoveCount(game.getMoveCount());
 				g.setMoves(game.getMoves());

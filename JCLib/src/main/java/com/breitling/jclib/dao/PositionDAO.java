@@ -11,5 +11,5 @@ public interface PositionDAO
 	
 	public List<Position> findByHash(long hash);
 	
-	public Number addPosition(Position pos);
+	public Number persistPosition(Position pos);
 }

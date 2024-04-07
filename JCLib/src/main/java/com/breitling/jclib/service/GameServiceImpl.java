@@ -2,15 +2,23 @@ package com.breitling.jclib.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.dao.GameDAO;
 import com.breitling.jclib.dao.GameDAOImpl;
+import com.breitling.jclib.dao.GamePositionDAO;
+import com.breitling.jclib.dao.GamePositionDAOImpl;
+import com.breitling.jclib.dao.PositionDAO;
+import com.breitling.jclib.dao.PositionDAOImpl;
 import com.breitling.jclib.dao.SourceDAO;
 import com.breitling.jclib.dao.SourceDAOImpl;
 import com.breitling.jclib.model.Game;
 import com.breitling.jclib.model.Source;
+import com.breitling.jclib.persistence.Position;
 import com.breitling.jclib.pgn.PGNReader;
 import com.breitling.jclib.pgn.PGNReaderImpl.Move;
 import com.breitling.jclib.util.Factory;
@@ -18,7 +26,8 @@ import com.breitling.jclib.util.Factory;
 @Service
 public class GameServiceImpl implements GameService 
 {
-
+	private static Logger LOG = LoggerFactory.getLogger(GameServiceImpl.class);
+	
 	@Override
 	public void saveGamesFromPath(String path)
 	{
@@ -38,17 +47,24 @@ public class GameServiceImpl implements GameService
 			
 			for (Game g : games)
 			{
+				LOG.debug("-----");
+				
 				reader = PGNReader.createReader(g.getMoves());
 				var moves = reader.getMoveList();
 				var fens = reader.getFENsFromMoves(Board.create(), moves);
 				
-				persistToDB(source, g);
-				persistToDB(source, moves, fens);
+				var gid = persistToDB(source, g);
+				
+				LOG.debug("Game: {}", gid);
+				
+				persistToDB(source, moves, fens, gid);
+				
+				LOG.debug("-----");
 			}
 		}
 		catch (Exception e)
 		{
-			
+			LOG.error(e.getMessage());
 		}
 	}
 
@@ -61,7 +77,7 @@ public class GameServiceImpl implements GameService
 			var moveList = reader.getMoveList();
 			var fens = reader.getFENsFromMoves(Board.create(), moveList);
 			
-			persistToDB((Source) null, moveList, fens);
+			persistToDB((Source) null, moveList, fens, 0);
 		}
 		catch (Exception e)
 		{
@@ -76,25 +92,61 @@ public class GameServiceImpl implements GameService
 		return parts[parts.length-1].substring(0, parts[parts.length-1].indexOf("."));
 	}
 	
-	private void persistToDB(Source source)
+	private long persistToDB(Source source)
 	{
 		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, source.getName());
-		var id = dao.persistSource(Factory.Persistence.Source.create(source));
+		var n = dao.persistSource(Factory.Persistence.Source.create(source));
 		
-		source.setId(id.longValue());
+		var id = n.longValue();
+		
+		source.setId(id);
+		
+		return id;
 	}
 	
-	private void persistToDB(Source source, Game g)
+	private long persistToDB(Source source, Game g)
 	{
-		 var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, source.getName());		 
+		 var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, source.getName());
 		 var p = Factory.Persistence.Game.create(g);
 		 
 		 p.setSourceId(source.getId());
-		 dao.persistGame(p);
+		 var n = dao.persistGame(p);
+		 
+		 return n.longValue();
 	}
 	
-	private void persistToDB(Source source, List<Move> moves, List<String> fens)
+	private long persistToDB(Source source, List<Move> moves, List<String> fens, long gid)
 	{
+		var dao = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, source.getName());
+		var da0 = (GamePositionDAO) Factory.DAO.createDAO(GamePositionDAOImpl.class, source.getName());
 		
+		for (String fen : fens)
+		{
+			long pid = 0;
+			var positions = dao.findByHash(BitBoard.generateBitBoardHash(fen));
+			
+			if (positions.size() > 0)
+			{
+				for (Position p : positions)
+				{
+					if (p.getFen().equals(fen))
+					{
+						pid = p.getId();
+						LOG.debug("Found position: {}", pid);
+						break;
+					}
+				}
+			}
+			if (pid == 0)
+			{
+				pid = dao.persistPosition(Factory.Persistence.Position.create(fen)).longValue();
+				LOG.debug("Added position: {}", pid);
+			}
+			
+			if (gid > 0)
+				da0.persistRecord(gid, pid);
+		}
+		
+		return 0;
 	}
 }
