@@ -801,16 +801,18 @@ public class Board
     	switch (p)
     	{
     	case Piece.ROOK:
-    		 rc |= isValidRookMove(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip);
     	     rc &= !isPinned(c, from, skip);
     		 break;
     		 
     	case Piece.QUEEN:
-    		 rc |= isValidRookMove(c, from, to, skip) || isValidBishopMove(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip);
+    	     rc &= !isPinned(c, from, skip);
     		 break;
     		 
     	case Piece.BISHOP:
-    		 rc |= isValidBishopMove(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip);
+    	     rc &= !isPinned(c, from, skip);
     		 break;
     		 
     	case Piece.KNIGHT:
@@ -824,33 +826,12 @@ public class Board
     	return rc;
     }
     
-    private boolean isValidRookMove(int color, int from, int to, int skip)
+    private boolean isValidMove(int color, int from, int to, int skip)
     {
     	boolean rc = true;
 		
     	int delta = DIR_MOVE_DELTA[dirOfSquares[from][to]];
    		
-    	for (int n = from+delta; n != to; n = n + delta)
-    	{
-    		if (n == skip)
-    			continue;
-    		
-    		if (isPieceAt(color, n) || isPieceAt(WHITE-color, n))
-    		{
-    			rc = false;
-    			break;
-    		}
-    	}
-    	
-    	return rc;
-    }
-    
-    private boolean isValidBishopMove(int color, int from, int to, int skip)
-    {
-    	boolean rc = true;
-    	
-    	int delta = DIR_MOVE_DELTA[dirOfSquares[from][to]];
-
     	for (int n = from+delta; n != to; n = n + delta)
     	{
     		if (n == skip)
@@ -880,17 +861,10 @@ public class Board
 				int oppositecolor = WHITE-color;
 				Piece piece = findPieceAt(oppositecolor, i);
 				
-				if (piece == Piece.QUEEN)
+				if (piece == Piece.QUEEN || piece == Piece.ROOK || piece == Piece.BISHOP)
 				{
-					rc |= isValidRookMove(oppositecolor, i, kingidx, from);
-					rc |= isValidBishopMove(oppositecolor, i, kingidx, from);
+					rc |= isValidMove(oppositecolor, i, kingidx, from);
 				}
-				else
-				if (piece == Piece.ROOK)
-					rc |= isValidRookMove(oppositecolor, i,kingidx, from);
-				else
-				if (piece == Piece.BISHOP)
-					rc |= isValidBishopMove(oppositecolor, i, kingidx, from);
 			}
 		}
 		
