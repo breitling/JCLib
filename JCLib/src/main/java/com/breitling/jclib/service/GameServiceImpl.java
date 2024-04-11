@@ -64,7 +64,7 @@ public class GameServiceImpl implements GameService
 		}
 		catch (Exception e)
 		{
-			LOG.error(e.getMessage());
+			LOG.error("Error saving a game: {}", e.getMessage());
 		}
 	}
 
@@ -139,11 +139,13 @@ public class GameServiceImpl implements GameService
 			}
 			if (pid == 0)
 			{
-				pid = dao.persistPosition(Factory.Persistence.Position.create(fen)).longValue();
+				var n = dao.persistPosition(Factory.Persistence.Position.create(fen));
+				
+				pid = n.longValue();
 				LOG.debug("Added position: {}", pid);
 			}
 			
-			if (gid > 0)
+			if (gid > 0 && pid > 0)
 				da0.persistRecord(gid, pid);
 		}
 		

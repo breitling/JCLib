@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
+import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Result;
+import com.breitling.jclib.model.Game;
 import com.breitling.jclib.util.Factory;
 
 public class PGNReaderTest 
@@ -153,28 +155,40 @@ public class PGNReaderTest
 		
 		assertNotNull(games);
 		assertEquals(47, games.size());
-//		
-//		System.out.println(" ");
-//		System.out.println("Found " + games.size() + " games.");
-//		
-//		int n = 1;
-//		
-//		for (Game g : games)
-//		{
-//			Board b = Board.create(g.getFEN());
-//			reader = PGNReader.createReader(g.getMoves());
-//			
-//			var fens = reader.getFENsFromMoves(b);
-//			
-// 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
-// 			System.out.println(" ");
-//			
-//			for (String f : fens)
-//			{
-//				System.out.println(f);
-//			}
-//			
-// 			System.out.println("------------------------------------");
-//		}
+		
+		System.out.println(" ");
+		System.out.println("Found " + games.size() + " games.");
+		
+		int n = 1;
+		
+		for (Game g : games)
+		{
+			Board b = Board.create(g.getFEN());
+			reader = PGNReader.createReader(g.getMoves());
+			
+			var fens = reader.getFENsFromMoves(b);
+			
+ 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
+ 			System.out.println(" ");
+			
+			for (String f : fens)
+			{
+				System.out.println(f);
+			}
+			
+ 			System.out.println("------------------------------------");
+		}
+	}
+	
+	@Test
+	public void testGetFENsFromMoves_PinnedRook_FEN()
+	{
+		var board = Board.create("6k1/2R2p1p/6p1/8/4b1P1/P4R2/1r5P/7K w - - 1 39");
+		var reader = PGNReader.createReader("39. Rxf7 Rf2 40. Rf8+ Kg7 0-1");
+		
+		var fens = reader.getFENsFromMoves(board);
+		
+		assertNotNull(fens);
+		assertEquals("6k1/5R1p/6p1/8/4b1P1/P4R2/1r5P/7K b - - 0 39", fens.get(0));
 	}
 }

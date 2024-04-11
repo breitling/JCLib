@@ -103,6 +103,22 @@ public class PGNReaderImpl implements PGNReader
 		}
     }
     
+	@Override
+	public List<String> getFENsFromMoves(Board b, String moves) 
+	{
+        tokens = moves.split(" ");
+        
+        try
+        {
+        	return getFENsFromMoves(b, this.parseMoves());
+        }
+    	catch (PGNException e) 
+    	{
+    		LOG.error("Error generating FENs: failed to parse move list - {}", e.getMessage());
+            return new ArrayList<String>();
+		}
+	}
+    
     public List<String> getFENsFromMoves(Board b, List<Move> moveList)
     {
         List<String> fens = new ArrayList<>();

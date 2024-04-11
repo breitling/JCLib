@@ -218,6 +218,45 @@ public class BitBoard
     	return board;
     }
     
+//  FIND WHERE THE FIRST BIT IS AT IN A BITBOARD!    
+    public static final int getFirstSquareIndex(long bb)
+    {
+        int sqi = 0;
+        
+        if ((bb & 0xFFFFFFFFL) == 0L) 
+        {
+        	bb >>>= 32;
+            sqi += 32;
+        }
+        if ((bb & 0xFFFFL) == 0L)
+        {
+        	bb >>>= 16; 
+    	    sqi += 16;
+        }
+        if ((bb & 0xFFL) == 0L)
+        {
+        	bb >>>= 8;
+        	sqi += 8;
+        }
+        if ((bb & 0xFL) == 0L)
+        {
+        	bb >>>= 4;
+        	sqi += 4;
+        }
+        if ((bb & 0x3L) == 0L)
+        {
+        	bb >>>= 2;
+        	sqi += 2;
+        }
+        if ((bb & 0x1L) == 0L)
+        {
+        	bb >>>= 1; 
+        	sqi += 1;
+        }
+        
+        return sqi;
+    }
+    
 	public static long generateBitBoardHash(String fen)
 	{
 		byte [] bytes = new byte [0];

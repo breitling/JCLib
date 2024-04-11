@@ -36,7 +36,7 @@ public class GameServiceTests
 	@BeforeEach
 	public void setupForTest() throws SQLException
 	{
-		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60"); //, Factory.DAO.INMEMORY);
+		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60", Factory.DAO.INMEMORY);
 		
 		if (!initialized)
 		{
@@ -53,7 +53,7 @@ public class GameServiceTests
 	{
 		service.saveGamesFromSource(Factory.Model.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
 		
-		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60"); //, Factory.DAO.INMEMORY);
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60", Factory.DAO.INMEMORY);
 		var games = dao.findGamesBySource("RJF60");
 		
 		assertEquals(60, games.size());

@@ -114,7 +114,7 @@ public class BoardTests
 	@Test
 	public void testBoard_FromFEN_GoodPosition()
 	{
-		var b = Board.create("8/6p1/7k/8/1K6/8/1P6/8");
+		var b = Board.create("8/6p1/7k/8/1K6/8/1P6/8 w - - 0 1");
 		
 		assertEquals("8/6p1/7k/8/1K6/8/1P6/8", b.toFEN().split(" ")[0]);
 	}
@@ -122,7 +122,7 @@ public class BoardTests
 	@Test
 	public void testResetToStaringPosition_FEN_Board()
 	{
-		var b = Board.create("8/6p1/7k/8/1K6/8/1P6/8");
+		var b = Board.create("8/6p1/7k/8/1K6/8/1P6/8 w - - 0 1");
 
 		b.resetToStartingPosition();
 		
@@ -135,16 +135,50 @@ public class BoardTests
 		var b = Board.create();
 		
 		b.move("e2-e4");
-		b.move("e7e5");
+		b.move("d7d5");
+		
 		b.move("Bc4");
 		b.move("b8c6");
+		
 		b.move("Qd1-h5");
 		b.move("Nf6");
-		b.move("Nf3");
-		b.move("Be7");
-		b.move("O-O");
-		b.move("0-0");
 		
-		assertEquals("r1bq1rk1/ppppbppp/2n2n2/4p2Q/2B1P3/5N2/PPPP1PPP/RNB2RK1 w - - 6 6", b.toFEN());
+		b.move("Nf3");
+		b.move("Be6");
+		
+		b.move("a4");
+		b.move("Qd7");
+		
+		b.move("O-O");
+		b.move("0-0-0");
+		
+		assertEquals("2kr1b1r/pppqpppp/2n1bn2/3p3Q/P1B1P3/5N2/1PPP1PPP/RNB2RK1 w - - 3 7", b.toFEN());
+	}
+	
+	@Test
+	public void testPieceBitBoard_FindAPieceOnABoard_Index()
+	{
+		var board = Board.create("6k1/2R2p1p/6p1/8/4b1P1/P4R2/1r5P/7K w - - 1 39");
+		
+		int i1 = BitBoard.getFirstSquareIndex(board.pieceBitBoard(Color.WHITE, Piece.KING));
+		int i2 = BitBoard.getFirstSquareIndex(board.pieceBitBoard(Color.BLACK, Piece.KING));
+		
+		assertEquals(7, i1);
+		assertEquals(62, i2);
+
+		int i3 = BitBoard.getFirstSquareIndex(board.pieceBitBoard(Color.BLACK, Piece.BISHOP));
+		
+		assertEquals(28, i3);
+
+		long bb = board.pieceBitBoard(Color.WHITE, Piece.ROOK);		
+		int  i4 = BitBoard.getFirstSquareIndex(bb); 	// 2 ROOKS, WHICH IS FIRST?
+		
+		assertEquals(21, i4);					// SMALLEST INDEX FIRST!
+		
+		bb &= bb-1;								// REMOVE FIRST ROOK! bb-1 IS ONES COMPLEMENT OF BITS, SO & REMOVES BIT
+		
+		int i5 = BitBoard.getFirstSquareIndex(bb); 	// 2nd ROOKS
+		
+		assertEquals(50, i5);
 	}
 }

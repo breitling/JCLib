@@ -13,6 +13,8 @@ public interface PGNReader
 	
 	public List<String> getFENsFromMoves(Board b);
 	
+	public List<String> getFENsFromMoves(Board b, String moves);
+	
 	public List<String> getFENsFromMoves(Board b, List<Move> list);
 	
 	public List<Game> getGames();
