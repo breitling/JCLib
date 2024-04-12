@@ -21,6 +21,7 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals(7, fens.size());
+		assertEquals("r1bqkbnr/1ppp1Qpp/2n5/p3p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4", fens.get(6));
 	}
 	
 	@Test
@@ -39,6 +40,7 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals(85, fens.size());
+		assertEquals("8/8/4R1p1/2k3p1/1p4P1/1P1b1P2/3K1n2/8 b - - 2 43", fens.get(84));
 	}
 	
 	@Test
@@ -53,6 +55,7 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals(60, fens.size());
+		assertEquals("6rk/pp5p/8/6Q1/1P1b1P2/P6P/4q2P/4nR1K w - - 0 31", fens.get(59));
 	}
 	
 	@Test
@@ -70,6 +73,7 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals(126, fens.size());
+		assertEquals("8/8/1P6/PBk5/K6p/7P/3b4/8 w - - 5 64", fens.get(125));
 	}
 	
 	@Test
@@ -124,7 +128,7 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_BigPGNFile_ListOfGames() throws PGNException
 	{
-		var source = Factory.Model.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
+		var source = Factory.Model.Source.create("KIA", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
 		var reader = PGNReader.createReader(source);
 		
 		var games = reader.getGames();
@@ -155,29 +159,29 @@ public class PGNReaderTest
 		
 		assertNotNull(games);
 		assertEquals(47, games.size());
-		
-		System.out.println(" ");
-		System.out.println("Found " + games.size() + " games.");
-		
-		int n = 1;
-		
-		for (Game g : games)
-		{
-			Board b = Board.create(g.getFEN());
-			reader = PGNReader.createReader(g.getMoves());
-			
-			var fens = reader.getFENsFromMoves(b);
-			
- 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
- 			System.out.println(" ");
-			
-			for (String f : fens)
-			{
-				System.out.println(f);
-			}
-			
- 			System.out.println("------------------------------------");
-		}
+//		
+//		System.out.println(" ");
+//		System.out.println("Found " + games.size() + " games.");
+//		
+//		int n = 1;
+//		
+//		for (Game g : games)
+//		{
+//			Board b = Board.create(g.getFEN());
+//			reader = PGNReader.createReader(g.getMoves());
+//			
+//			var fens = reader.getFENsFromMoves(b);
+//			
+// 			System.out.println("" + g.getRound() + "[" + (n++) + "] FEN=" + g.getFEN() + " Result: " + g.getResult());
+// 			System.out.println(" ");
+//			
+//			for (String f : fens)
+//			{
+//				System.out.println(f);
+//			}
+//			
+// 			System.out.println("------------------------------------");
+//		}
 	}
 	
 	@Test

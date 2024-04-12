@@ -440,6 +440,24 @@ public class Board
         enPassantTargetSquare = "-";
     }
     
+    private void adjustCastling(int color)
+    {
+		if (color == WHITE)
+		{
+			if (castling.contains("kq"))
+				castling = "kq";
+			else
+				castling = "-";
+		}
+		else
+		{
+			if (castling.contains("KQ"))
+				castling = "KQ";
+			else
+				castling = "-";
+		}
+    }
+    
     private long bitBoards(Color c, int index)
     {
     	if (c == Color.WHITE)
@@ -603,20 +621,7 @@ public class Board
 		movePiece(color, Piece.KING, kfrom, kto);
 		movePiece(color, Piece.ROOK, rfrom, rto);
 
-		if (c == WHITE)
-		{
-			if (castling.contains("kq"))
-				castling = "kq";
-			else
-				castling = "-";
-		}
-		else
-		{
-			if (castling.contains("KQ"))
-				castling = "KQ";
-			else
-				castling = "-";
-		}
+		adjustCastling(c);
 		
     	if (c == BLACK)
     		fullMoveNumber++;
@@ -782,6 +787,9 @@ public class Board
     		movePiece(color == WHITE ? Color.WHITE : Color.BLACK, p, starting, target);
     	else
     		capturePiece(color == WHITE ? Color.WHITE : Color.BLACK, p, starting, target);
+    	
+    	if (p == Piece.KING)
+    		adjustCastling(color);
     	
     	if (color == BLACK)
     		fullMoveNumber++;
