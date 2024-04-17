@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -465,22 +467,24 @@ public class Factory
 		
 		public static GenericDAO createDAO(Class<?> klass, String db, int where)
 		{
-			String key = new StringBuilder(klass.getName()).append("::").append(db).toString();
+			String key = new StringBuilder(db).append("::").append(klass.getName()).toString();
 			GenericDAO dao = daoCache.get(key);
 			
 			if (dao == null)
 			{
-				try 
+				try
 				{
-					dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
+					DataSource source;
 					
 					if (where == ONDISK)
-						dao.setDataSource(JCLDatabase.createDataSource(db));
+						source = JCLDatabase.createDataSource(db);
 					else
-						dao.setDataSource(JCLDatabase.createInMemoryDataSource(db));
+						source = JCLDatabase.createInMemoryDataSource(db);
 					
+					dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
+					dao.setDataSource(source);
 					daoCache.put(key, dao);
-				} 
+				}
 				catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
 					   InvocationTargetException | NoSuchMethodException | SecurityException e) 
 				{

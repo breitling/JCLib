@@ -19,8 +19,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.breitling.jclib.dao.GameDAO;
 import com.breitling.jclib.dao.GameDAOImpl;
 import com.breitling.jclib.dao.GenericDAO;
+import com.breitling.jclib.dao.PositionDAO;
+import com.breitling.jclib.dao.PositionDAOImpl;
 import com.breitling.jclib.dao.SourceDAO;
 import com.breitling.jclib.dao.SourceDAOImpl;
+import com.breitling.jclib.util.DAOUtils;
 import com.breitling.jclib.util.Factory;
 
 @ExtendWith(SpringExtension.class)
@@ -36,12 +39,13 @@ public class GameServiceTests
 	@BeforeEach
 	public void setupForTest() throws SQLException
 	{
-		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60", Factory.DAO.INMEMORY);
+		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
 		
 		if (!initialized)
 		{
 			Connection conn = ((GenericDAO) dao).getDataSource().getConnection();
 			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/games.schema")));
+			DAOUtils.closeQuietly(conn);
 			initialized = true;
 		}
 	}
@@ -49,13 +53,16 @@ public class GameServiceTests
 //  TEST CASES
 	
 	@Test
-	public void testSaveGamesFromSource_GoodSource_Objects()
+	public void testSaveGamesFromSource_GoodSource_DBObjects()
 	{
-		service.saveGamesFromSource(Factory.Model.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
+		service.saveGamesFromSource(Factory.Model.Source.create("RJF60_1", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
 		
-		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60", Factory.DAO.INMEMORY);
-		var games = dao.findGamesBySource("RJF60");
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
+		var da0 = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
+		var positions = da0.count();
+		var games = dao.findGamesBySource("RJF60_1");
 		
 		assertEquals(60, games.size());
+		assertEquals(4219, positions);
 	}
 }

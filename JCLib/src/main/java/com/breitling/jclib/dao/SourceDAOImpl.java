@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,6 +17,13 @@ import com.breitling.jclib.util.Factory;
 public class SourceDAOImpl extends GenericDAO implements SourceDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);
+
+	public SourceDAOImpl() {
+	}
+
+	public SourceDAOImpl(DataSource source) {
+		super(source);
+	}
 
 	@Override
 	public Optional<Source> findById(long id)

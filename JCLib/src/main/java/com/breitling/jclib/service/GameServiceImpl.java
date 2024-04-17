@@ -1,5 +1,6 @@
 package com.breitling.jclib.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ public class GameServiceImpl implements GameService
 			
 			var reader = PGNReader.createReader(source);		
 			var games = reader.getGames();
+			var positions = 0L;
 			
 			for (Game g : games)
 			{
@@ -57,9 +59,7 @@ public class GameServiceImpl implements GameService
 				
 				LOG.debug("Game: {}", gid);
 				
-				persistToDB(source, moves, fens, gid);
-				
-				LOG.debug("-----");
+				positions = persistToDB(source, moves, fens, gid, positions);
 			}
 		}
 		catch (Exception e)
@@ -77,10 +77,13 @@ public class GameServiceImpl implements GameService
 			var moveList = reader.getMoveList();
 			var fens = reader.getFENsFromMoves(Board.create(), moveList);
 			
-			persistToDB((Source) null, moveList, fens, 0);
+			var count = persistToDB((Source) null, moveList, fens, 0, 0);
+			
+			LOG.debug("Added {} positions", count);
 		}
 		catch (Exception e)
 		{
+			LOG.error(e.getMessage());
 		}
 	}
 	
@@ -115,10 +118,12 @@ public class GameServiceImpl implements GameService
 		 return n.longValue();
 	}
 	
-	private long persistToDB(Source source, List<Move> moves, List<String> fens, long gid)
+	private long persistToDB(Source source, List<Move> moves, List<String> fens, long gid, long count)
 	{
 		var dao = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, source.getName());
 		var da0 = (GamePositionDAO) Factory.DAO.createDAO(GamePositionDAOImpl.class, source.getName());
+		
+		List<Position> newpositions = new ArrayList<>();
 		
 		for (String fen : fens)
 		{
@@ -133,22 +138,26 @@ public class GameServiceImpl implements GameService
 					{
 						pid = p.getId();
 						LOG.debug("Found position: {}", pid);
+						da0.persistRecord(gid, pid);
 						break;
 					}
 				}
 			}
-			if (pid == 0)
-			{
-				var n = dao.persistPosition(Factory.Persistence.Position.create(fen));
-				
-				pid = n.longValue();
-				LOG.debug("Added position: {}", pid);
-			}
 			
-			if (gid > 0 && pid > 0)
-				da0.persistRecord(gid, pid);
+			if (pid == 0)
+				newpositions.add(Factory.Persistence.Position.create(fen));
 		}
 		
-		return 0;
+		long n = 0;
+		
+		if (newpositions.size() > 0)
+		{
+			n = dao.persistPositions(newpositions);
+			da0.persistRecords(gid, newpositions);
+			
+			LOG.debug("Added {} new positions [size={}]", (n > count ? n - count : 0), newpositions.size());
+		}
+		
+		return n;
 	}
 }

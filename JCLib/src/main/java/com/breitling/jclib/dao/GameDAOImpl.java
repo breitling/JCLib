@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,6 +19,13 @@ public class GameDAOImpl extends GenericDAO implements GameDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);
 	
+	public GameDAOImpl() {
+	}
+	
+	public GameDAOImpl(DataSource source) {
+		super(source);
+	}
+
 	@Override
 	public Optional<Game> findById(Long id)
 	{

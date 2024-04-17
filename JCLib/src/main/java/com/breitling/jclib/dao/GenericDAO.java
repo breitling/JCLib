@@ -2,19 +2,22 @@ package com.breitling.jclib.dao;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import jakarta.annotation.PostConstruct;
 
 public abstract class GenericDAO extends JdbcDaoSupport
 {
-	@Autowired
 	private DataSource datasource;
 	
-	@PostConstruct
-	public void init()
-	{
+	public GenericDAO()	{
+	}
+	
+	public GenericDAO(DataSource source) {
 		this.setDataSource(datasource);
+	}
+	
+	public JdbcTemplate getTemplate()
+	{
+		return new JdbcTemplate(datasource);
 	}
 }

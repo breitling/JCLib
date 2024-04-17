@@ -45,7 +45,7 @@ public class JCLDatabase
 	        dataSource = new DriverManagerDataSource();
 	        
 	        dataSource.setDriverClassName("org.h2.Driver");
-	        dataSource.setUrl(new StringBuilder("jdbc:h2:mem:").append(dbname).toString());
+	        dataSource.setUrl(new StringBuilder("jdbc:h2:mem:").append(dbname).append(";DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE").toString());
 	        dataSource.setUsername("sa");
 	        dataSource.setPassword("");
 	        

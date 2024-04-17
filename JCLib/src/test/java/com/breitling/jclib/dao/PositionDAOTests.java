@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.breitling.jclib.persistence.Position;
 import com.breitling.jclib.util.Factory;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +35,7 @@ public class PositionDAOTests
     private DatabaseDAO dbDao;
     
     private static boolean initialized = false;
+    private static int RECORDS = 1;
     
 	@BeforeEach
 	public void setupForTest() throws SQLException
@@ -89,6 +93,37 @@ public class PositionDAOTests
     {
     	var id = dao.persistPosition(Factory.Persistence.Position.create("rnbkqbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"));
     	
-		assertEquals(3, id.longValue());
+		assertEquals(RECORDS+1, id.longValue());
+		
+		RECORDS++;
+    }
+    
+    @Test
+    public void testPersistPositions_ListOfPositions_Records()
+    {
+    	List<Position> positions = new ArrayList<>();
+    	
+    	positions.add(Factory.Persistence.Position.create("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"));
+    	positions.add(Factory.Persistence.Position.create("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2"));
+    	positions.add(Factory.Persistence.Position.create("rnbqkbnr/pppp1ppp/8/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 2"));
+    	positions.add(Factory.Persistence.Position.create("rnbqkb1r/pppp1ppp/5n2/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 2 3"));
+    	positions.add(Factory.Persistence.Position.create("rnbqkb1r/pppp1ppp/5n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3"));
+    	positions.add(Factory.Persistence.Position.create("r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4"));
+    	positions.add(Factory.Persistence.Position.create("r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4"));
+    	
+    	var lastid = dao.persistPositions(positions);
+    	var p = dao.findById(lastid);
+    	
+    	assertTrue(p.isPresent());
+    	assertEquals(lastid, p.get().getId());
+    	assertEquals("r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4", p.get().getFen());
+    	
+    	var id = lastid - 6;
+    	
+    	p = dao.findById(id);
+    	
+    	assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", p.get().getFen());
+    	
+    	RECORDS += 7;
     }
 }

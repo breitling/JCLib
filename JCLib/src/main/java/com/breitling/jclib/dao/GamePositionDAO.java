@@ -8,5 +8,7 @@ public interface GamePositionDAO
 {
 	public List<Position> findByGameId(long id);
 	
-	public Number persistRecord(long gameId, long posId);
+	public Number persistRecord(Long gameId, Long posId);
+	
+	public long persistRecords(Long gameId, List<Position> positions);
 }

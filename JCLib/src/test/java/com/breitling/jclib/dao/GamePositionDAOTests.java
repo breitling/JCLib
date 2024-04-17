@@ -58,7 +58,7 @@ public class GamePositionDAOTests
     @Test
     public void testAddPosition_GoodPosition_OneRow()
     {
-    	Number id = dao.persistRecord(1,2);
+    	Number id = dao.persistRecord(1L, 2L);
     	
 		assertEquals(2, id.longValue());
     }

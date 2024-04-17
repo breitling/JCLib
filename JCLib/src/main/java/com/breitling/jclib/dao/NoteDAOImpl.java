@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,6 +17,13 @@ import com.breitling.jclib.util.Factory;
 public class NoteDAOImpl extends GenericDAO implements NoteDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(NoteDAOImpl.class);
+
+	public NoteDAOImpl() {
+	}
+	
+	public NoteDAOImpl(DataSource source) {
+		super(source);
+	}
 
 	@Override
 	public List<Note> findByPositionId(long posId)

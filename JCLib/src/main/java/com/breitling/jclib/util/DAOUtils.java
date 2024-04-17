@@ -1,6 +1,7 @@
 package com.breitling.jclib.util;
 
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -64,6 +65,21 @@ public class DAOUtils
             try
             {
                 cs.close();
+            }
+            catch (Throwable e)
+            {
+                LOG.error("Error while closing classable statment: " + e.toString());
+            }
+        }
+    }
+	
+	public static void closeQuietly(Connection c)
+    {
+        if (c != null)
+        {
+            try
+            {
+            	c.commit();
             }
             catch (Throwable e)
             {
