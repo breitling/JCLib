@@ -39,7 +39,7 @@ public class GameServiceTests
 	@BeforeEach
 	public void setupForTest() throws SQLException
 	{
-		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
+		var dao = (SourceDAO) Factory.DAO.createDAO(SourceDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
 		
 		if (!initialized)
 		{
@@ -55,14 +55,28 @@ public class GameServiceTests
 	@Test
 	public void testSaveGamesFromSource_GoodSource_DBObjects()
 	{
-		service.saveGamesFromSource(Factory.Model.Source.create("RJF60_1", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
+		service.saveGamesFromSource(Factory.Model.Source.create("UNIT_TESTS", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn"));
 		
-		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
-		var da0 = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, "RJF60_1", Factory.DAO.INMEMORY);
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
+		var da0 = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
 		var positions = da0.count();
-		var games = dao.findGamesBySource("RJF60_1");
+		var games = dao.findGamesBySource("UNIT_TESTS");
 		
 		assertEquals(60, games.size());
 		assertEquals(4219, positions);
+	}
+	
+	@Test
+	public void testSaveGamesFromSource_BigSource_DBObjects()
+	{
+		service.saveGamesFromSource(Factory.Model.Source.create("UNIT_TESTS", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn"));
+		
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
+		var da0 = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
+		var positions = da0.count();
+		var games = dao.findGamesBySource("UNIT_TESTS");
+		
+		assertEquals(22784, games.size());
+		assertEquals(1822720, positions);
 	}
 }

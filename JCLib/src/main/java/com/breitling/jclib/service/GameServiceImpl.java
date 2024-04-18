@@ -51,14 +51,14 @@ public class GameServiceImpl implements GameService
 			{
 				LOG.debug("-----");
 				
+				var gid = persistToDB(source, g);
+
+				LOG.debug("Game: {} - {} vs {}", gid, g.getWhite(), g.getBlack());
+
 				reader = PGNReader.createReader(g.getMoves());
 				var moves = reader.getMoveList();
 				var fens = reader.getFENsFromMoves(Board.create(), moves);
-				
-				var gid = persistToDB(source, g);
-				
-				LOG.debug("Game: {}", gid);
-				
+
 				positions = persistToDB(source, moves, fens, gid, positions);
 			}
 		}

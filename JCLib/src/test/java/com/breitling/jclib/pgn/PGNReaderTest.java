@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.model.Game;
 import com.breitling.jclib.util.Factory;
 
 public class PGNReaderTest 
@@ -194,5 +193,28 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals("6k1/5R1p/6p1/8/4b1P1/P4R2/1r5P/7K b - - 0 39", fens.get(0));
+	}
+	
+	@Test
+	public void testGetFENsFromMoves_PinnedMove1_FEN()
+	{
+		var board = Board.create("2r2rk1/4nppp/1R3n2/8/8/b5P1/PRBN3P/2K1N1q1 w - - 0 1");
+		var reader = PGNReader.createReader("1. Nf3 Qc5 2. Rb5 0-1");
+		
+		var fens = reader.getFENsFromMoves(board);
+		
+		assertNotNull(fens);
+		assertEquals("2r2rk1/4nppp/5n2/1Rq5/8/b4NP1/PRB4P/2K1N3 b - - 3 2", fens.get(2));
+	}
+	
+	@Test
+	public void testGetFENsFromMoves_Ref8_FENs()
+	{
+		var reader = PGNReader.createReader("1. Nf3 d5 2. g3 Nf6 3. Bg2 e6 4. O-O Nbd7 5. d4 Bd6 6. Nbd2 O-O 7. b3 e5 8. dxe5 Nxe5 9. Bb2 Qe7 10. Re1 Ne4 11. Nxe4 dxe4 12. Nd4 Ng4 13. e3 Qf6 14. Qe2 Qh6 15. h3 Nf6 16. Nb5 Bxh3 17. Bxf6 Bxg2 18. Kxg2 Qxf6 19. Nxd6 Qxd6 20. Rad1 Qe7 21. Rd4 Rad8 22. Red1 c5 23. Rd5 Qf6 24. Qg4 Rde8 25. Rxc5 b6 26. Rc4 Qb2 27. a4 f5 28. Qg5 Qe5 29. Rd7 Rf7 30. Rcd4 g6 31. c4 Qg7 32. Rd8 Ref8 33. R4d6 Rxd8 34. Rxd8+ Rf8 35. a5 bxa5 36. c5 Qb7 37. Rxf8+ Kxf8 38. Qf6+ Ke8 39. c6 Qxb3 40. c7  1-0");
+		
+		var fens = reader.getFENsFromMoves();
+		
+		assertNotNull(fens);
+		assertEquals(79, fens.size());
 	}
 }

@@ -759,12 +759,12 @@ public class Board
     		{
 	    		for (int i : list)
 	    		{
-	    			if (rank >= 0 && rank == ((i/8) * 8) && isValidMove(color, p, i, target, NO_SQUARE))
+	    			if (rank >= 0 && rank == ((i/8) * 8) && isValidMoveNoPin(color, p, i, target, NO_SQUARE))
 	    			{
 	    				starting = i;	    				
 	    				break;
 	    			}
-	    			if (file >= 0 && file == (i%8) && isValidMove(color, p, i, target, NO_SQUARE))
+	    			if (file >= 0 && file == (i%8) && isValidMoveNoPin(color, p, i, target, NO_SQUARE))
 	    			{
 	    				starting = i;
 	    				break;
@@ -810,21 +810,49 @@ public class Board
     	{
     	case Piece.ROOK:
     		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, skip);
+    	     rc &= !isPinned(c, from, to, skip);
     		 break;
     		 
     	case Piece.QUEEN:
     		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, skip);
+    	     rc &= !isPinned(c, from, to, skip);
     		 break;
     		 
     	case Piece.BISHOP:
     		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, skip);
+    	     rc &= !isPinned(c, from, to, skip);
     		 break;
     		 
     	case Piece.KNIGHT:
-    		 rc = true;
+    		 rc = !isPinned(c, from, to, skip);
+    		 break;
+    		 
+    	default:
+    		 break;
+    	}
+    	
+    	return rc;
+    }
+    
+    private boolean isValidMoveNoPin(int c, Piece p, int from, int to, int skip)
+    {
+    	boolean rc = true;
+
+    	switch (p)
+    	{
+    	case Piece.ROOK:
+    		 rc = isValidMove(c, from, to, skip);
+    		 break;
+    		 
+    	case Piece.QUEEN:
+    		 rc = isValidMove(c, from, to, skip);
+    		 break;
+    		 
+    	case Piece.BISHOP:
+    		 rc = isValidMove(c, from, to, skip);
+    		 break;
+    		 
+    	case Piece.KNIGHT:
     		 break;
     		 
     	default:
@@ -855,7 +883,7 @@ public class Board
     	return rc;
     }
     
-    private boolean isPinned(int color, int from, int skip)
+    private boolean isPinned(int color, int from, int to, int skip)
     {
     	boolean rc = false;
     	
@@ -864,18 +892,57 @@ public class Board
 		
 		if (attacks.size() > 0)
 		{
+			int oppositecolor = WHITE-color;
+			
 			for (int i : attacks)
 			{
-				int oppositecolor = WHITE-color;
-				Piece piece = findPieceAt(oppositecolor, i);
-				
-				if (piece == Piece.QUEEN || piece == Piece.ROOK || piece == Piece.BISHOP)
+				if (i != to)
 				{
-					rc |= isValidMove(oppositecolor, i, kingidx, from);
+					Piece piece = findPieceAt(oppositecolor, i);
+					
+					if (piece == Piece.QUEEN || piece == Piece.ROOK || piece == Piece.BISHOP)
+					{
+						long bb = BitBoard.getPieceBitBoard(piece, i);
+						
+						if ((bb & BitBoard.OfSquare(from)) > 0 && isValidDirection(piece, i, kingidx))
+							rc = isValidMove(oppositecolor, i, kingidx, from);
+						
+						if (rc)
+							break;
+					}
 				}
 			}
 		}
 		
 		return rc;
+    }
+    
+    private boolean isValidDirection(Piece p, int from, int to)
+    {
+    	boolean rc = true;
+    	
+    	int dir = dirOfSquares[from][to];
+    	
+    	switch(p)
+    	{
+    	case QUEEN:
+    		 break;
+    		 
+    	case ROOK:
+    		 if (dir != N && dir != S && dir != E && dir != W)
+    			 rc = false;
+    		 break;
+    		 
+    	case BISHOP:
+    		if (dir != NE && dir != SW && dir != SE && dir != NW)
+				 rc = false;
+	   		 break;
+	   		 
+	   	default:
+	   		 rc = false;
+	   		 break;
+    	}
+    	
+    	return rc;
     }
 }
