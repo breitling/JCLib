@@ -35,7 +35,7 @@ public class GamePositionDAOTests
 	@BeforeEach
 	public void setupForTest() throws SQLException
 	{
-		dao = (GamePositionDAO) Factory.DAO.createDAO(GamePositionDAOImpl.class, "positions", Factory.DAO.INMEMORY);
+		dao = (GamePositionDAO) Factory.DAO.createDAO(GamePositionDAOImpl.class, "gamepositions", Factory.DAO.INMEMORY);
 		
 		if (!initialized)
 		{

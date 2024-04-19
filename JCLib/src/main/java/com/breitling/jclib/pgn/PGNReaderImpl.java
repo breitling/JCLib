@@ -54,7 +54,7 @@ public class PGNReaderImpl implements PGNReader
     {
     	this();
 
-        tokens = moves.split("[ .]");
+        tokens = moves.split(" ");
     }
     
     public PGNReaderImpl(Source source) throws PGNException
@@ -106,7 +106,7 @@ public class PGNReaderImpl implements PGNReader
 	@Override
 	public List<String> getFENsFromMoves(Board b, String moves) 
 	{
-        tokens = moves.split("[ .]");
+        tokens = moves.split(" ");
         
         try
         {
@@ -321,8 +321,8 @@ public class PGNReaderImpl implements PGNReader
         String whitemove = parseMove(Color.WHITE);
         String blackmove = parseMove(Color.BLACK);
         
-        if (peekToken().matches("[0-9]+[.]*"))   // ANOTHER MOVE?
-        	pushToken(TOKEN_SPACE);				// YES
+        if (peekToken().matches("^[0-9]+[\056]?([NBRQKO0[a-h]].*)?$"))  // ANOTHER MOVE?
+        	pushToken(TOKEN_SPACE);					// YES
         
         return new Move(movenumber, whitemove, blackmove);
     }
@@ -332,10 +332,17 @@ public class PGNReaderImpl implements PGNReader
     	var t = getNextToken();
         var n = 0;
         
-        if (t.endsWith("."))
-        	n = Integer.valueOf(t.substring(0, t.length()-1));
+        if (!t.endsWith("."))
+        {
+        	String [] parts = t.split("[.]");
+
+        	n = Integer.valueOf(parts[0]);
+        	pushToken(parts[1]);
+        }
         else
-        	n = Integer.valueOf(t);
+        {
+        	n = Integer.valueOf(t.substring(0, t.length()-1));
+        }
         
         return n;
     }

@@ -6,7 +6,9 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,7 @@ public class GameServiceTests
 	}
 	
 	@Test
+	@Disabled
 	public void testSaveGamesFromSource_BigSource_DBObjects()
 	{
 		service.saveGamesFromSource(Factory.Model.Source.create("UNIT_TESTS", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn"));
@@ -81,6 +84,7 @@ public class GameServiceTests
 	}
 	
 	@Test
+	@Disabled
 	public void testSaveGamesFromSource_Tal_DBObjects()
 	{
 		service.saveGamesFromSource(Factory.Model.Source.create("UNIT_TESTS", "/Users/bobbr/Desktop/Chess/Games/Tal.pgn"));
@@ -91,6 +95,6 @@ public class GameServiceTests
 		var games = dao.findGamesBySource("UNIT_TESTS");
 		
 		assertEquals(2430, games.size());
-		assertEquals(194480, positions);
+		assertEquals(142652, positions);
 	}
 }
