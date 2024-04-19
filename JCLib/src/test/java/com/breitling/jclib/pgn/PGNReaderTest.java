@@ -216,5 +216,18 @@ public class PGNReaderTest
 		
 		assertNotNull(fens);
 		assertEquals(79, fens.size());
+		assertEquals("4k3/p1P4p/5Qp1/p4p2/4p3/1q2P1P1/5PK1/8 b - - 0 40", fens.get(78));
+	}
+	
+	@Test
+	public void testGetFENsFromMoves_BlockCheckWithRf2_FENS()
+	{
+		var reader = PGNReader.createReader("1. Nf3 d5 2. g3 c6 3. Bg2 Bg4 4. O-O Nf6 5. d4 Nbd7 6. c3 e6 7. Bg5 Be7 8. Nbd2 h6 9. Bxf6 Nxf6 10. Ne5 Bf5 11. Re1 O-O 12. e4 Bh7 13. exd5 cxd5 14. f4 Rc8 15. g4 Ne8 16. Qe2 Nd6 17. f5 exf5 18. Bxd5 Rc7 19. Rf1 Kh8 20. gxf5 Bg5 21. Ndf3 Nxf5 22. Nxg5 Qxg5+ 23. Kh1 f6 24. Nf3 Ng3+ 25. hxg3 Qxd5 26. Kh2 Qh5+ 27. Kg2 Re8 28. Qd2 Rce7 29. Rae1 Be4 30. Re3 g5 31. Kg1 Kg7 32. c4 Qh3 33. Qh2 Qg4 34. d5 Bxf3 35. Rexf3 Re2 36. R1f2 Qxc4 37. Rxf6 Re1+ 38. Rf1 Qd4+ 39. Rf2 Qxd5 40. Qh3 Rxf1+ 41. Qxf1 Qxa2 42. Qd3 Qe6 43. Qd4+ Qe5 44. Qd3 Qe1+ 45. Kg2 Qe4+ 46. Qxe4 Rxe4 47. Kf3 Rb4 48. Rd2 Kf6 49. Rd6+ Kf5 50. Rd5+ Ke6 51. Rd2 h5 52. Rh2 Kf5 53. Rd2 Rb3+ 54. Kg2  0-1");
+		
+		var fens = reader.getFENsFromMoves();
+		
+		assertNotNull(fens);
+		assertEquals(107, fens.size());
+		assertEquals("8/pp6/8/5kpp/8/1r4P1/1P1R2K1/8 b - - 5 54", fens.get(106));
 	}
 }

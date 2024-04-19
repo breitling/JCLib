@@ -79,4 +79,18 @@ public class GameServiceTests
 		assertEquals(22784, games.size());
 		assertEquals(1822720, positions);
 	}
+	
+	@Test
+	public void testSaveGamesFromSource_Tal_DBObjects()
+	{
+		service.saveGamesFromSource(Factory.Model.Source.create("UNIT_TESTS", "/Users/bobbr/Desktop/Chess/Games/Tal.pgn"));
+		
+		var dao = (GameDAO) Factory.DAO.createDAO(GameDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
+		var da0 = (PositionDAO) Factory.DAO.createDAO(PositionDAOImpl.class, "UNIT_TESTS", Factory.DAO.INMEMORY);
+		var positions = da0.count();
+		var games = dao.findGamesBySource("UNIT_TESTS");
+		
+		assertEquals(2430, games.size());
+		assertEquals(194480, positions);
+	}
 }

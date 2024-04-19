@@ -233,6 +233,12 @@ public class Board
     
     public void move(String notation)
     {
+    	if (notation.matches("[0-9]+\\."))
+    	{
+    		String [] parts = notation.split("\\.");
+    		notation = parts[1];
+    	}
+    			
     	this.buffer = notation.toCharArray();
     	this.last = buffer.length-1;
     	
@@ -759,26 +765,33 @@ public class Board
     		{
 	    		for (int i : list)
 	    		{
-	    			if (rank >= 0 && rank == ((i/8) * 8) && isValidMoveNoPin(color, p, i, target, NO_SQUARE))
+	    			if (rank >= 0 && rank == ((i/8) * 8) && isValidMoveNoPins(color, p, i, target, NO_SQUARE, NO_SQUARE))
 	    			{
 	    				starting = i;	    				
 	    				break;
 	    			}
-	    			if (file >= 0 && file == (i%8) && isValidMoveNoPin(color, p, i, target, NO_SQUARE))
+	    			if (file >= 0 && file == (i%8) && isValidMoveNoPins(color, p, i, target, NO_SQUARE, NO_SQUARE))
 	    			{
 	    				starting = i;
 	    				break;
 		    		}
 	    		}
     		}
+    		
     		for (int i : list)
 	    	{
 	    		if (starting != NO_SQUARE)
 	    			break;
 	    			
-	    		if (isValidMove(color, p, i, target, NO_SQUARE))
+	    		if (isValidMove(color, p, i, target, NO_SQUARE, NO_SQUARE))
 	    			starting = i;
 	    	}
+        //  HACK: DOES THIS WORK?
+    		if (starting == NO_SQUARE)
+    		{
+    			starting = list.get(list.size()-1);
+    			LOG.warn("using last square as the move!");
+    		}
     	}
 
     	assert(starting != NO_SQUARE);
@@ -802,29 +815,29 @@ public class Board
 		enPassantTargetSquare = "-";
     }
     
-    private boolean isValidMove(int c, Piece p, int from, int to, int skip)
+    private boolean isValidMove(int c, Piece p, int from, int to, int skip, int blocks)
     {
     	boolean rc = false;
 
     	switch (p)
     	{
     	case Piece.ROOK:
-    		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip, blocks);
+    	     rc &= !isPinned(c, from, to);
     		 break;
     		 
     	case Piece.QUEEN:
-    		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip, blocks);
+    	     rc &= !isPinned(c, from, to);
     		 break;
     		 
     	case Piece.BISHOP:
-    		 rc |= isValidMove(c, from, to, skip);
-    	     rc &= !isPinned(c, from, to, skip);
+    		 rc |= isValidMove(c, from, to, skip, blocks);
+    	     rc &= !isPinned(c, from, to);
     		 break;
     		 
     	case Piece.KNIGHT:
-    		 rc = !isPinned(c, from, to, skip);
+    		 rc = !isPinned(c, from, to);
     		 break;
     		 
     	default:
@@ -834,22 +847,22 @@ public class Board
     	return rc;
     }
     
-    private boolean isValidMoveNoPin(int c, Piece p, int from, int to, int skip)
+    private boolean isValidMoveNoPins(int c, Piece p, int from, int to, int skip, int blocks)
     {
     	boolean rc = true;
 
     	switch (p)
     	{
     	case Piece.ROOK:
-    		 rc = isValidMove(c, from, to, skip);
+    		 rc = isValidMove(c, from, to, skip, blocks);
     		 break;
     		 
     	case Piece.QUEEN:
-    		 rc = isValidMove(c, from, to, skip);
+    		 rc = isValidMove(c, from, to, skip, blocks);
     		 break;
     		 
     	case Piece.BISHOP:
-    		 rc = isValidMove(c, from, to, skip);
+    		 rc = isValidMove(c, from, to, skip, blocks);
     		 break;
     		 
     	case Piece.KNIGHT:
@@ -862,7 +875,7 @@ public class Board
     	return rc;
     }
     
-    private boolean isValidMove(int color, int from, int to, int skip)
+    private boolean isValidMove(int color, int from, int to, int skip, int blocks)
     {
     	boolean rc = true;
 		
@@ -873,7 +886,7 @@ public class Board
     		if (n == skip)
     			continue;
     		
-    		if (isPieceAt(color, n) || isPieceAt(WHITE-color, n))
+    		if (isPieceAt(color, n) || isPieceAt(WHITE-color, n) || n == blocks) 
     		{
     			rc = false;
     			break;
@@ -883,7 +896,7 @@ public class Board
     	return rc;
     }
     
-    private boolean isPinned(int color, int from, int to, int skip)
+    private boolean isPinned(int color, int from, int to)
     {
     	boolean rc = false;
     	
@@ -905,7 +918,7 @@ public class Board
 						long bb = BitBoard.getPieceBitBoard(piece, i);
 						
 						if ((bb & BitBoard.OfSquare(from)) > 0 && isValidDirection(piece, i, kingidx))
-							rc = isValidMove(oppositecolor, i, kingidx, from);
+							rc = isValidMove(oppositecolor, i, kingidx, from, to);
 						
 						if (rc)
 							break;
