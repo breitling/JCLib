@@ -3,12 +3,11 @@ package com.breitling.jclib.pgn;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.util.Factory;
+import com.breitling.jclib.model.DataSource;
 
 public class PGNReaderTest 
 {
@@ -117,18 +116,19 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_GoodPGNFile_ListOfGames() throws PGNException
 	{
-		var source = Factory.Model.Source.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn");
+		var source = DataSource.create("RJF60", "/Users/bobbr/Desktop/Chess/Games/RJF60.pgn");
 		var reader = PGNReader.createReader(source);
 		
 		var games = reader.getGames();
 		
 		assertNotNull(games);
+		assertEquals(60, games.size());
 	}
 	
 	@Test
 	public void testGetGames_BigPGNFile_ListOfGames() throws PGNException
 	{
-		var source = Factory.Model.Source.create("KIA", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
+		var source = DataSource.create("KIA", "/Users/bobbr/Desktop/Chess/Games/RetiKIA.pgn");
 		var reader = PGNReader.createReader(source);
 		
 		var games = reader.getGames();
@@ -153,7 +153,7 @@ public class PGNReaderTest
 	@Test
 	public void testGetGames_PGNFileWithFENs_ListOfPositions() throws PGNException
 	{
-		var source = Factory.Model.Source.create("EndGames", "/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");
+		var source = DataSource.create("EndGames", "/Users/bobbr/Desktop/Chess/Games/EndGameStudies.pgn");
 		var reader = PGNReader.createReader(source);
 		var games = reader.getGames();
 		

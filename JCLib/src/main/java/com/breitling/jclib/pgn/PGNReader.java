@@ -3,8 +3,8 @@ package com.breitling.jclib.pgn;
 import java.util.List;
 
 import com.breitling.jclib.chess.Board;
+import com.breitling.jclib.model.DataSource;
 import com.breitling.jclib.model.Game;
-import com.breitling.jclib.model.Source;
 import com.breitling.jclib.pgn.PGNReaderImpl.Move;
 
 public interface PGNReader 
@@ -31,7 +31,11 @@ public interface PGNReader
 		return new PGNReaderImpl(moves);
 	}
 	
-	public static PGNReader createReader(Source source) throws PGNException 
+	public static PGNReader createReader(String name, String path) throws PGNException {
+		return new PGNReaderImpl(name, path);
+	}
+	
+	public static PGNReader createReader(DataSource source) throws PGNException 
 	{
 		return new PGNReaderImpl(source);
 	}

@@ -1,11 +1,15 @@
 package com.breitling.jclib.model;
 
-import com.breitling.jclib.util.Fetchable;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Id;
 
-public class Note extends Fetchable
+@Entity(value = "note")
+public class Note extends BaseModel
 {
+	@Id
 	private long     id;
-	private Position position;
+	
+	private long	 positionId;
 	private String   note;
 	
 	public long getId() {
@@ -16,12 +20,12 @@ public class Note extends Fetchable
 		this.id = id;
 	}
 	
-	public Position getPosition() {
-		return position;
+	public long getPositionId() {
+		return positionId;
 	}
 	
-	public void setPosition(Position position) {
-		this.position = position;
+	public void setPositionId(long position) {
+		this.positionId = position;
 	}
 	
 	public String getNote() {

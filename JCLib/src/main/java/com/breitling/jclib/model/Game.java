@@ -1,19 +1,19 @@
 package com.breitling.jclib.model;
 
 import java.sql.Date;
-import java.util.Set;
 
-import com.breitling.jclib.annotation.Fetch;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Id;
+
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.util.FetchType;
-import com.breitling.jclib.util.Fetchable;
 
-@Fetch(type = FetchType.LAZY)
-public class Game extends Fetchable
+@Entity(value = "game")
+public class Game extends BaseModel
 {
+	@Id
 	private long    id;
-	@Fetch(type=FetchType.LAZY)
-	private Source  source;
+	
+	private long	sourceId;
 	private String  white;
 	private String  whiteELO;
 	private String  black;
@@ -30,8 +30,6 @@ public class Game extends Fetchable
 	private int     moveCount;
 	private String  moves;
 	
-	private Set<Position> positions;
-	
 //  GETTERS AND SETTERS	
 	
 	public long getId() {
@@ -42,12 +40,12 @@ public class Game extends Fetchable
 		this.id = id;
 	}
 	
-	public Source getSource() {
-		return source;
+	public long getSourceId() {
+		return sourceId;
 	}
 
-	public void setSource(Source source) {
-		this.source = source;
+	public void setSource(long sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	public String getWhite() {
@@ -168,13 +166,5 @@ public class Game extends Fetchable
 	
 	public void setMoves(String moves) {
 		this.moves = moves;
-	}
-	
-	public Set<Position> getPositions() {
-		return positions;
-	}
-	
-	public void setPositions(Set<Position> positions) {
-		this.positions = positions;
 	}
 }

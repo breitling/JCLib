@@ -79,7 +79,7 @@ public class DAOUtils
         {
             try
             {
-            	c.commit();
+//            	c.commit();
             }
             catch (Throwable e)
             {

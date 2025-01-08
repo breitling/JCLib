@@ -1,14 +1,25 @@
 package com.breitling.jclib.dao;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.breitling.jclib.persistence.Position;
+import org.dizitart.no2.filters.Filter;
 
-public interface GamePositionDAO
+import com.breitling.jclib.model.GamePosition;
+
+public interface GamePositionDAO 
 {
-	public List<Position> findByGameId(long id);
+	public Optional<List<GamePosition>> findAll();
 	
-	public Number persistRecord(Long gameId, Long posId);
+	public Optional<GamePosition> findById(long id);
 	
-	public long persistRecords(Long gameId, List<Position> positions);
+	public Optional<List<GamePosition>> findByGameId(long gid);
+	
+	public List<GamePosition> find(Filter f);
+	
+	public Boolean save(GamePosition g);
+	
+	public Boolean update(final GamePosition g);
+	
+	public Boolean delete(final GamePosition g);
 }

@@ -1,15 +1,34 @@
 package com.breitling.jclib.model;
 
-import com.breitling.jclib.annotation.Fetch;
-import com.breitling.jclib.util.FetchType;
+import org.dizitart.no2.index.IndexType;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Id;
+import org.dizitart.no2.repository.annotations.Index;
 
-public class GamePosition
+import com.breitling.jclib.util.Factory;
+
+@Entity(value = "positions", indices = {@Index (fields = "gameId", type = IndexType.NON_UNIQUE)})
+public class GamePosition extends BaseModel
 {
-	private long     id;
-	@Fetch(type=FetchType.LAZY)
-	private Game     game;
-	@Fetch(type=FetchType.LAZY)
-	private Position position;
+	@Id
+	private long id;
+	private long gameId;
+	private long positionId;
+	
+//  FACTORIES
+	
+	public static GamePosition create(long gid, long pid)
+	{
+		var g = new GamePosition();
+		
+		g.setId(Factory.DAO.generateId());
+		g.setGameId(gid);
+		g.setPositionId(pid);
+		
+		return g;
+	}
+	
+//  GETTERS AND SETTERS
 	
 	public long getId() {
 		return id;
@@ -19,19 +38,19 @@ public class GamePosition
 		this.id = id;
 	}
 
-	public Game getGame() {
-		return game;
+	public long getGameId() {
+		return gameId;
 	}
 
-	public void setGame(Game game) {
-		this.game = game;
+	public void setGameId(Long id) {
+		this.gameId = id;
 	}
 
-	public Position getPosition() {
-		return position;
+	public long getPositionId() {
+		return positionId;
 	}
 
-	public void setPosition(Position position) {
-		this.position = position;
+	public void setPositionId(long id) {
+		this.positionId = id;
 	}
 }

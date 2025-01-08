@@ -3,17 +3,23 @@ package com.breitling.jclib.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.breitling.jclib.persistence.Position;
+import org.dizitart.no2.filters.Filter;
 
-public interface PositionDAO
+import com.breitling.jclib.model.Position;
+
+public interface PositionDAO 
 {
-	public int count();
+	public Optional<List<Position>> findAll();
 	
 	public Optional<Position> findById(long id);
 	
-	public List<Position> findByHash(long hash);
+	public Optional<List<Position>> findByHash(long hash);
 	
-	public Number persistPosition(Position pos);
+	public List<Position> find(Filter f);
 	
-	public long persistPositions(List<Position> positions);
+	public Boolean save(Position p);
+	
+	public Boolean update(final Position p);
+	
+	public Boolean delete(final Position p);
 }

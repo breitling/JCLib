@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 public class Board 
 {
-	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(Board.class);
 	
     public static final int

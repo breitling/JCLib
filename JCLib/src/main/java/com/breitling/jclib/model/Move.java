@@ -1,20 +1,21 @@
 package com.breitling.jclib.model;
 
-import com.breitling.jclib.annotation.Fetch;
-import com.breitling.jclib.util.FetchType;
-import com.breitling.jclib.util.Fetchable;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Id;
 
-public class Move extends Fetchable
+@Entity(value = "move")
+public class Move extends BaseModel
 {
-	private long     id;
-	@Fetch(type=FetchType.LAZY)
-	private Position position;
-	private String   move;
-	private int      games;
-	private int      averageELO;
-	private int      whiteWinPercent;
-	private int      blackWinPercent;
-	private int      drawPercent;
+	@Id
+	private long	id;
+	
+	private long	positionId;
+	private String	move;
+	private int    games;
+	private int    averageELO;
+	private int    whiteWinPercent;
+	private int    blackWinPercent;
+	private int    drawPercent;
 	
 	public long getId() {
 		return id;
@@ -24,12 +25,12 @@ public class Move extends Fetchable
 		this.id = id;
 	}
 	
-	public Position getPosition() {
-		return this.position;
+	public long getPositionId() {
+		return this.positionId;
 	}
 	
-	public void setPosition(Position p) {
-		this.position = p;
+	public void setPositionId(long p) {
+		this.positionId = p;
 	}
 	
 	public String getMove() {

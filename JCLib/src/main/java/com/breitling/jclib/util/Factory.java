@@ -1,234 +1,226 @@
 package com.breitling.jclib.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.RowMapper;
 
-import com.breitling.jclib.bean.JCLDatabase;
 import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.chess.Result;
-import com.breitling.jclib.dao.GenericDAO;
 
 public class Factory 
 {
+	@SuppressWarnings("unused")
 	private static Logger LOG = LoggerFactory.getLogger(Factory.class);
 	
-	public static class Persistence
-	{
-		public static class Game
-		{
-			public static com.breitling.jclib.persistence.Game create()
-			{
-				return new com.breitling.jclib.persistence.Game();
-			}
-			
-			public static com.breitling.jclib.persistence.Game create(String w, String b, String r, String moves) 
-			{
-				var g = new com.breitling.jclib.persistence.Game();
-				
-				g.setId(0L);
-				g.setWhite(w);
-				g.setBlack(b);
-				g.setResult(r);
-				g.setDate(Date.valueOf(LocalDate.now()));
-				g.setMoves(moves);
-				
-				return g;
-			}
-			
-			public static com.breitling.jclib.persistence.Game create(com.breitling.jclib.model.Game game) 
-			{
-				var g = new com.breitling.jclib.persistence.Game();
-				
-				g.setId(game.getId());
-				g.setWhite(game.getWhite());
-				g.setBlack(game.getBlack());
-				g.setResult(game.getResult().getValue());
-				g.setDate(game.getDate());
-				g.setMoveCount(game.getMoveCount());
-				g.setMoves(game.getMoves());
-				
-				return g;
-			}
-			
-			public static RowMapper<com.breitling.jclib.persistence.Game> getRowMapper()
-			{
-				return new RowMapper<com.breitling.jclib.persistence.Game>() {
-					@Override
-					public com.breitling.jclib.persistence.Game mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						var g = new com.breitling.jclib.persistence.Game();
-						
-						g.setId(rs.getLong(1));
-						g.setSourceId(rs.getLong(2));
-						g.setWhite(rs.getString(3));
-						g.setWhiteELO(rs.getString(4));
-						g.setBlack(rs.getString(5));
-						g.setBlackELO(rs.getString(6));
-						g.setEvent(rs.getString(7));
-						g.setSite(rs.getString(8));
-						g.setEventDate(DateUtils.stringToDate(rs.getString(9)));
-						g.setTimeControl(rs.getString(10));
-						g.setRound(rs.getInt(11));
-						g.setDate(DateUtils.stringToDate(rs.getString(12)));
-						g.setResult(rs.getString(13));
-						g.setECO(rs.getString(14));
-						g.setFEN(rs.getString(15));
-						g.setMoveCount(rs.getInt(16));
-						g.setMoves(rs.getString(17));
-						
-						return g;
-					}
-				};
-			}
-			
-			private Game() {};
-		}
-		
-		public static class Note 
-		{
-			public static com.breitling.jclib.persistence.Note create(long posId, String note)
-			{
-				var n = new com.breitling.jclib.persistence.Note();
-				
-				n.setId(0L);
-				n.setPositionId(posId);
-				n.setNote(note);
-				
-				return n;
-			}
-			
-			public static com.breitling.jclib.persistence.Note create(com.breitling.jclib.model.Note note)
-			{
-				var n = new com.breitling.jclib.persistence.Note();
-				
-				n.setId(note.getId());
-				n.setPositionId(note.getPosition().getId());
-				n.setNote(note.getNote());
-				
-				return n;
-			}
-			
-			public static RowMapper<com.breitling.jclib.persistence.Note> getRowMapper()
-			{
-				return new RowMapper<com.breitling.jclib.persistence.Note>() {
-					@Override
-					public com.breitling.jclib.persistence.Note mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						var n = new com.breitling.jclib.persistence.Note();
-						
-						n.setId(rs.getLong(1));
-						
-						n.setNote(rs.getString(3));
-						
-						return n;
-					}
-				};
-			}
-			
-			private Note(){};
-		}
-		
-		public static class Position 
-		{
-			public static com.breitling.jclib.persistence.Position create(String fen)
-			{
-				var p = new com.breitling.jclib.persistence.Position();
-				
-				p.setBitBoardHash(BitBoard.generateBitBoardHash(fen));
-				p.setFen(fen);
-				p.setCreated(Date.valueOf(LocalDate.now()));
-				
-				return p;
-			}
-			
-			public static com.breitling.jclib.persistence.Position create(com.breitling.jclib.model.Position position)
-			{
-				var p = new com.breitling.jclib.persistence.Position();
-				
-				p.setId(position.getId());
-				p.setBitBoardHash(position.getBitBoardHash());
-				p.setFen(position.getFen());
-				p.setCreated(position.getCreated());
-				
-				return p;
-			}
-			
-			public static RowMapper<com.breitling.jclib.persistence.Position> getRowMapper()
-			{
-				return new RowMapper<com.breitling.jclib.persistence.Position>() {
-					@Override
-					public com.breitling.jclib.persistence.Position mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						var p = new com.breitling.jclib.persistence.Position();
-						
-						p.setId(rs.getLong(1));
-						p.setBitBoardHash(rs.getLong(2));
-						p.setFen(rs.getString(3));
-						p.setCreated(DateUtils.stringToDate(rs.getString(4)));
-						
-						return p;
-					}
-				};
-			}
-			
-			private Position(){};
-		}
-		
-		public static class Source
-		{
-			public static com.breitling.jclib.persistence.Source create(String name, String path)
-			{
-				var s = new com.breitling.jclib.persistence.Source();
-				
-				s.setName(name);
-				s.setPath(path);
-				
-				return s;
-			}
-			
-			public static com.breitling.jclib.persistence.Source create(com.breitling.jclib.model.Source source)
-			{
-				var s = new com.breitling.jclib.persistence.Source();
-
-				s.setName(source.getName());
-				s.setPath(source.getPath());
-				
-				return s;
-			}
-			
-			public static RowMapper<com.breitling.jclib.persistence.Source> getRowMapper()
-			{
-				return new RowMapper<com.breitling.jclib.persistence.Source>() {
-					@Override
-					public com.breitling.jclib.persistence.Source mapRow(ResultSet rs, int rowNum) throws SQLException
-					{
-						var s = new com.breitling.jclib.persistence.Source();
-						
-						s.setId(rs.getLong(1));
-						s.setName(rs.getString(2));
-						s.setPath(rs.getString(3));
-						
-						return s;
-					}
-				};
-			}
-		}
-		
-		private Persistence(){};
-	}
-	
+//	public static class Persistence
+//	{
+//		public static class Game
+//		{
+//			public static com.breitling.jclib.persistence.Game create()
+//			{
+//				return new com.breitling.jclib.persistence.Game();
+//			}
+//			
+//			public static com.breitling.jclib.persistence.Game create(String w, String b, String r, String moves) 
+//			{
+//				var g = new com.breitling.jclib.persistence.Game();
+//				
+//				g.setId(0L);
+//				g.setWhite(w);
+//				g.setBlack(b);
+//				g.setResult(r);
+//				g.setDate(Date.valueOf(LocalDate.now()));
+//				g.setMoves(moves);
+//				
+//				return g;
+//			}
+//			
+//			public static com.breitling.jclib.persistence.Game create(com.breitling.jclib.model.Game game) 
+//			{
+//				var g = new com.breitling.jclib.persistence.Game();
+//				
+//				g.setId(game.getId());
+//				g.setWhite(game.getWhite());
+//				g.setBlack(game.getBlack());
+//				g.setResult(game.getResult().getValue());
+//				g.setDate(game.getDate());
+//				g.setMoveCount(game.getMoveCount());
+//				g.setMoves(game.getMoves());
+//				
+//				return g;
+//			}
+//			
+//			public static RowMapper<com.breitling.jclib.persistence.Game> getRowMapper()
+//			{
+//				return new RowMapper<com.breitling.jclib.persistence.Game>() {
+//					@Override
+//					public com.breitling.jclib.persistence.Game mapRow(ResultSet rs, int rowNum) throws SQLException
+//					{
+//						var g = new com.breitling.jclib.persistence.Game();
+//						
+//						g.setId(rs.getLong(1));
+//						g.setSourceId(rs.getLong(2));
+//						g.setWhite(rs.getString(3));
+//						g.setWhiteELO(rs.getString(4));
+//						g.setBlack(rs.getString(5));
+//						g.setBlackELO(rs.getString(6));
+//						g.setEvent(rs.getString(7));
+//						g.setSite(rs.getString(8));
+//						g.setEventDate(DateUtils.stringToDate(rs.getString(9)));
+//						g.setTimeControl(rs.getString(10));
+//						g.setRound(rs.getInt(11));
+//						g.setDate(DateUtils.stringToDate(rs.getString(12)));
+//						g.setResult(rs.getString(13));
+//						g.setECO(rs.getString(14));
+//						g.setFEN(rs.getString(15));
+//						g.setMoveCount(rs.getInt(16));
+//						g.setMoves(rs.getString(17));
+//						
+//						return g;
+//					}
+//				};
+//			}
+//			
+//			private Game() {};
+//		}
+//		
+//		public static class Note 
+//		{
+//			public static com.breitling.jclib.persistence.Note create(long posId, String note)
+//			{
+//				var n = new com.breitling.jclib.persistence.Note();
+//				
+//				n.setId(0L);
+//				n.setPositionId(posId);
+//				n.setNote(note);
+//				
+//				return n;
+//			}
+//			
+//			public static com.breitling.jclib.persistence.Note create(com.breitling.jclib.model.Note note)
+//			{
+//				var n = new com.breitling.jclib.persistence.Note();
+//				
+//				n.setId(note.getId());
+//				n.setPositionId(note.getPosition().getId());
+//				n.setNote(note.getNote());
+//				
+//				return n;
+//			}
+//			
+//			public static RowMapper<com.breitling.jclib.persistence.Note> getRowMapper()
+//			{
+//				return new RowMapper<com.breitling.jclib.persistence.Note>() {
+//					@Override
+//					public com.breitling.jclib.persistence.Note mapRow(ResultSet rs, int rowNum) throws SQLException
+//					{
+//						var n = new com.breitling.jclib.persistence.Note();
+//						
+//						n.setId(rs.getLong(1));
+//						
+//						n.setNote(rs.getString(3));
+//						
+//						return n;
+//					}
+//				};
+//			}
+//			
+//			private Note(){};
+//		}
+//		
+//		public static class Position 
+//		{
+//			public static com.breitling.jclib.persistence.Position create(String fen)
+//			{
+//				var p = new com.breitling.jclib.persistence.Position();
+//				
+//				p.setBitBoardHash(BitBoard.generateBitBoardHash(fen));
+//				p.setFen(fen);
+//				p.setCreated(Date.valueOf(LocalDate.now()));
+//				
+//				return p;
+//			}
+//			
+//			public static com.breitling.jclib.persistence.Position create(com.breitling.jclib.model.Position position)
+//			{
+//				var p = new com.breitling.jclib.persistence.Position();
+//				
+//				p.setId(position.getId());
+//				p.setBitBoardHash(position.getBitBoardHash());
+//				p.setFen(position.getFen());
+//				p.setCreated(position.getCreated());
+//				
+//				return p;
+//			}
+//			
+//			public static RowMapper<com.breitling.jclib.persistence.Position> getRowMapper()
+//			{
+//				return new RowMapper<com.breitling.jclib.persistence.Position>() {
+//					@Override
+//					public com.breitling.jclib.persistence.Position mapRow(ResultSet rs, int rowNum) throws SQLException
+//					{
+//						var p = new com.breitling.jclib.persistence.Position();
+//						
+//						p.setId(rs.getLong(1));
+//						p.setBitBoardHash(rs.getLong(2));
+//						p.setFen(rs.getString(3));
+//						p.setCreated(DateUtils.stringToDate(rs.getString(4)));
+//						
+//						return p;
+//					}
+//				};
+//			}
+//			
+//			private Position(){};
+//		}
+//		
+//		public static class Source
+//		{
+//			public static com.breitling.jclib.persistence.Source create(String name, String path)
+//			{
+//				var s = new com.breitling.jclib.persistence.Source();
+//				
+//				s.setName(name);
+//				s.setPath(path);
+//				
+//				return s;
+//			}
+//			
+//			public static com.breitling.jclib.persistence.Source create(com.breitling.jclib.model.Source source)
+//			{
+//				var s = new com.breitling.jclib.persistence.Source();
+//
+//				s.setName(source.getName());
+//				s.setPath(source.getPath());
+//				
+//				return s;
+//			}
+//			
+//			public static RowMapper<com.breitling.jclib.persistence.Source> getRowMapper()
+//			{
+//				return new RowMapper<com.breitling.jclib.persistence.Source>() {
+//					@Override
+//					public com.breitling.jclib.persistence.Source mapRow(ResultSet rs, int rowNum) throws SQLException
+//					{
+//						var s = new com.breitling.jclib.persistence.Source();
+//						
+//						s.setId(rs.getLong(1));
+//						s.setName(rs.getString(2));
+//						s.setPath(rs.getString(3));
+//						
+//						return s;
+//					}
+//				};
+//			}
+//		}
+//		
+//		private Persistence(){};
+//	}
+//	
 	public static class Model
 	{
 		public static class Game 
@@ -239,8 +231,6 @@ public class Factory
 				
 				g.setId(0L);
 				
-				g.setFetchType(FetchType.LAZY);
-				
 				return g;
 			}
 			
@@ -249,7 +239,6 @@ public class Factory
 				var g = new com.breitling.jclib.model.Game();
 				
 				g.setId(id);
-				g.setFetchType(FetchType.LAZY);
 				
 				return g;
 			}
@@ -263,52 +252,48 @@ public class Factory
 				g.setBlack(b);
 				g.setResult(r);
 				g.setDate(Date.valueOf(LocalDate.now()));
-				g.setMoves(moves);				
-				
-				g.setFetchType(FetchType.LAZY);
+				g.setMoves(moves);
 				
 				return g;
 			}
 			
-			public static com.breitling.jclib.model.Game create(com.breitling.jclib.persistence.Game game)
-			{
-				var g = new com.breitling.jclib.model.Game();
-				
-				g.setId(game.getId());
-				g.setSource(Source.create(game.getSourceId()));
-				g.setWhite(game.getWhite());
-				g.setWhiteELO(game.getWhiteELO());
-				g.setBlack(game.getBlack());
-				g.setBlackELO(game.getBlackELO());
-				g.setEvent(game.getEvent());
-				g.setSite(game.getSite());
-				g.setEventDate(game.getEventDate());
-				g.setTimeControl(game.getTimeControl());
-				g.setRound(game.getRound());
-				g.setResult(Result.valueOf(game.getResult()));
-				g.setDate(game.getDate());
-				g.setECO(game.getECO());
-				g.setFEN(game.getFEN());
-				g.setMoveCount(game.getMoveCount());
-				g.setMoves(game.getMoves());
-				
-				g.setFetchType(FetchType.LOADED);
-				
-				return g;
-			}
+//			public static com.breitling.jclib.model.Game create(com.breitling.jclib.persistence.Game game)
+//			{
+//				var g = new com.breitling.jclib.model.Game();
+//				
+//				g.setId(game.getId());
+//				g.setSource(Source.create(game.getSourceId()));
+//				g.setWhite(game.getWhite());
+//				g.setWhiteELO(game.getWhiteELO());
+//				g.setBlack(game.getBlack());
+//				g.setBlackELO(game.getBlackELO());
+//				g.setEvent(game.getEvent());
+//				g.setSite(game.getSite());
+//				g.setEventDate(game.getEventDate());
+//				g.setTimeControl(game.getTimeControl());
+//				g.setRound(game.getRound());
+//				g.setResult(Result.valueOf(game.getResult()));
+//				g.setDate(game.getDate());
+//				g.setECO(game.getECO());
+//				g.setFEN(game.getFEN());
+//				g.setMoveCount(game.getMoveCount());
+//				g.setMoves(game.getMoves());
+//				
+//				g.setFetchType(FetchType.LOADED);
+//				
+//				return g;
+//			}
 		}
 		
 		public static class Note 
 		{
-			public static com.breitling.jclib.model.Note create(long pos_id, String note)
+			public static com.breitling.jclib.model.Note create(long pid, String note)
 			{
 				var n = new com.breitling.jclib.model.Note();
 				
 				n.setId(0L);
-				n.setPosition(Position.create(pos_id));
+				n.setPositionId(pid);
 				n.setNote(note);
-				
-				n.setFetchType(FetchType.LAZY);
 				
 				return n;
 			}
@@ -318,23 +303,8 @@ public class Factory
 				var n = new com.breitling.jclib.model.Note();
 				
 				n.setId(0L);
-				n.setPosition(position);
+				n.setPositionId(position.getId());
 				n.setNote(note);
-				
-				n.setFetchType(FetchType.LOADED);
-				
-				return n;
-			}
-			
-			public static com.breitling.jclib.model.Note create(com.breitling.jclib.persistence.Note note)
-			{
-				var n = new com.breitling.jclib.model.Note();
-				
-				n.setId(note.getId());
-				n.setPosition(Position.create(note.getPositionId()));
-				n.setNote(note.getNote());
-				
-				n.setFetchType(FetchType.LAZY);
 				
 				return n;
 			}
@@ -349,7 +319,6 @@ public class Factory
 				var p = new com.breitling.jclib.model.Position();
 				
 				p.setId(id);
-				p.setFetchType(FetchType.LAZY);
 				
 				return p;
 			}
@@ -363,67 +332,24 @@ public class Factory
 				p.setFen(fen);
 				p.setCreated(Date.valueOf(LocalDate.now()));
 				
-				p.setFetchType(FetchType.LOADED);
-				
 				return p;
 			}
 			
-			public static com.breitling.jclib.model.Position create(com.breitling.jclib.persistence.Position position)
-			{
-				var p = new com.breitling.jclib.model.Position();
-				
-				p.setId(position.getId());
-				p.setBitBoardHash(position.getBitBoardHash());
-				p.setFen(position.getFen());
-				p.setCreated(position.getCreated());
-				
-				p.setFetchType(FetchType.LOADED);
-				
-				return p;
-			}
+//			public static com.breitling.jclib.model.Position create(com.breitling.jclib.persistence.Position position)
+//			{
+//				var p = new com.breitling.jclib.model.Position();
+//				
+//				p.setId(position.getId());
+//				p.setBitBoardHash(position.getBitBoardHash());
+//				p.setFen(position.getFen());
+//				p.setCreated(position.getCreated());
+//				
+//				p.setFetchType(FetchType.LOADED);
+//				
+//				return p;
+//			}
 			
 			private Position() {};
-		}
-		
-		public static class Source
-		{
-			public static com.breitling.jclib.model.Source create(long id)
-			{
-				var s = new com.breitling.jclib.model.Source();
-				
-				s.setId(id);
-				s.setFetchType(FetchType.LAZY);
-				
-				return s;
-			}
-			
-			public static com.breitling.jclib.model.Source create(String name, String path)
-			{
-				var s = new com.breitling.jclib.model.Source();
-				
-				s.setId(0L);
-				s.setName(name);
-				s.setPath(path);
-				
-				s.setFetchType(FetchType.LOADED);
-				
-				return s;
-			}
-			
-			public static com.breitling.jclib.model.Source create(com.breitling.jclib.persistence.Source source)
-			{
-				var s = new com.breitling.jclib.model.Source();
-				
-				s.setId(source.getId());
-				s.setName(source.getName());
-				s.setPath(source.getPath());
-				
-				s.setFetchType(FetchType.LOADED);
-				
-				return s;
-			}
-			
-			private Source() {};
 		}
 		
 		private Model() {};
@@ -455,44 +381,54 @@ public class Factory
 	
 	public static class DAO
 	{
-		private static Map<String,GenericDAO> daoCache = new HashMap<>();
+//		private static Map<String,GenericDAO> daoCache = new HashMap<>();
+		private static Random r = new Random();
 		
 		public static final int INMEMORY = 0;
 		public static final int ONDISK = 1;
 		
-		public static GenericDAO createDAO(Class<?> klass, String db)
-		{
-			return createDAO(klass, db, ONDISK);
-		}
+//		public static GenericDAO createDAO(Class<?> klass, String db)
+//		{
+//			return createDAO(klass, db, INMEMORY);
+//		}
+//		
+//		public static GenericDAO createDAO(Class<?> klass, String db, int where)
+//		{
+//			String key = new StringBuilder(db).append("::").append(klass.getName()).toString();
+//			GenericDAO dao = daoCache.get(key);
+//			
+//			if (dao == null)
+//			{
+//				try
+//				{
+//					DataSource source;
+//					
+//					if (where == ONDISK)
+//						source = JCLDatabase.createDataSource(db);
+//					else
+//						source = JCLDatabase.createInMemoryDataSource(db);
+//					
+//					dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
+//					dao.setDataSource(source);
+//					daoCache.put(key, dao);
+//				}
+//				catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
+//					   InvocationTargetException | NoSuchMethodException | SecurityException e) 
+//				{
+//					LOG.error("Error constructing a {} DAO: {}", klass.getName(), e.getMessage());
+//				}
+//			}
+//			
+//			return dao;
+//		}
 		
-		public static GenericDAO createDAO(Class<?> klass, String db, int where)
+		public static long generateId()
 		{
-			String key = new StringBuilder(db).append("::").append(klass.getName()).toString();
-			GenericDAO dao = daoCache.get(key);
+			long id = 0;
 			
-			if (dao == null)
-			{
-				try
-				{
-					DataSource source;
-					
-					if (where == ONDISK)
-						source = JCLDatabase.createDataSource(db);
-					else
-						source = JCLDatabase.createInMemoryDataSource(db);
-					
-					dao = (GenericDAO) klass.getDeclaredConstructor().newInstance();
-					dao.setDataSource(source);
-					daoCache.put(key, dao);
-				}
-				catch (InstantiationException | IllegalAccessException | IllegalArgumentException | 
-					   InvocationTargetException | NoSuchMethodException | SecurityException e) 
-				{
-					LOG.error("Error constructing a {} DAO: {}", klass.getName(), e.getMessage());
-				}
-			}
+			id = r.nextLong();
 			
-			return dao;
+			return id;
 		}
 		
 		private DAO(){};

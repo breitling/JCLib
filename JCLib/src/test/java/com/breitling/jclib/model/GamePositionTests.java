@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.breitling.jclib.util.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +19,7 @@ public class GamePositionTests
 		var gp = mapper.readValue(buildJSON(), GamePosition.class);
 		
 		assertNotNull(gp);
-		assertEquals(gp.getPosition().getId(), 1121231L);
+		assertEquals(gp.getPositionId(), 12L);
 	}
 	
 //  FACTORIES
@@ -34,8 +33,8 @@ public class GamePositionTests
 	{
 		var gp  = new GamePosition();
 		
-		gp.setGame(Factory.Model.Game.create(12L));
-		gp.setPosition(Factory.Model.Position.create(1121231L));
+		gp.setGameId(12L);
+		gp.setPositionId(12L);
 		
 		return gp;
 	}

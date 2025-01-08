@@ -5,19 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import com.breitling.jclib.util.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SourceTests 
+public class DataSourceTests 
 {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	@Test
 	public void testConstructor_Source_Object() throws JsonMappingException, JsonProcessingException
 	{
-		var s = mapper.readValue(buildJSON(), Source.class);
+		var s = mapper.readValue(buildJSON(), DataSource.class);
 		
 		assertNotNull(s);
 		assertEquals("Test", s.getName());
@@ -30,9 +29,9 @@ public class SourceTests
 		return this.mapper.writeValueAsString(buildSource());
 	}
 	
-	private Source buildSource()
+	private DataSource buildSource()
 	{
-		var s = Factory.Model.Source.create("Test", "/Users/bobbr/Desktop/Chess/Games/Tal.pgn");
+		var s = DataSource.create("Test", "/Users/bobbr/Desktop/Chess/Games/Tal.pgn");
 		
 		return s;
 	}

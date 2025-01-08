@@ -1,115 +1,93 @@
 package com.breitling.jclib.dao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import javax.sql.DataSource;
-
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.common.mapper.JacksonMapperModule;
+import org.dizitart.no2.repository.ObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
-import com.breitling.jclib.persistence.Game;
+import com.breitling.jclib.chess.Board;
+import com.breitling.jclib.model.DataSource;
+import com.breitling.jclib.model.Game;
+import com.breitling.jclib.model.GamePosition;
+import com.breitling.jclib.model.Position;
+import com.breitling.jclib.pgn.PGNReader;
 import com.breitling.jclib.util.Factory;
 
-public class GameDAOImpl extends GenericDAO implements GameDAO
+@Component
+public class GameDAOImpl extends CrudNitriteRepository<Game> implements GameDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GameDAOImpl.class);
 	
-	public GameDAOImpl() {
+	public GameDAOImpl(String name) {
+		super(name);
 	}
 	
-	public GameDAOImpl(DataSource source) {
-		super(source);
-	}
-
-	@Override
-	public Optional<Game> findById(Long id)
+//  CONTRACT METHODS
+	
+	public int importGames(DataSource d)
 	{
-		Optional<Game> game = Optional.empty();
+		int n = 0;
+		int p = 0;
 		
 		try
 		{
-			List<Game> list = getJdbcTemplate().query(new StringBuilder()
-			    .append("SELECT id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
-			    .append("FROM GAMES WHERE id=").append(id).toString(), Factory.Persistence.Game.getRowMapper());
+			LOG.debug("Source at {}", d.getPath());
 			
-			if (list.size() > 0)
-				game = Optional.of(list.get(0));
+			long t = System.currentTimeMillis();
+			
+			PGNReader reader = PGNReader.createReader(d);
+			List<Game> games = reader.getGames();
+			
+			LOG.debug("Found {} games", games.size());
+			
+			setStoreModule(d.getName());
+			
+			try (Nitrite db = Nitrite.builder().loadModule(getStoreModule()).loadModule(new JacksonMapperModule()).openOrCreate("user", "sa"))
+			{
+				ObjectRepository<Game> grepo = db.getRepository(Game.class);
+				ObjectRepository<Position> prepo = db.getRepository(Position.class);
+				ObjectRepository<GamePosition> gprepo = db.getRepository(GamePosition.class);
+				
+				for (Game g : games)
+				{
+					g.setId(Factory.DAO.generateId());
+					grepo.insert(g);
+					
+					var r = PGNReader.createReader(g.getMoves());
+					var moveList = r.getMoveList();
+					var fens = r.getFENsFromMoves(Board.create(), moveList);
+					
+					for (String f : fens)
+					{
+						Position pos = Factory.Model.Position.create(f);
+						
+						pos.setId(Factory.DAO.generateId());
+						prepo.insert(pos);
+						gprepo.insert(GamePosition.create(g.getId(), pos.getId()));
+						
+						p++;
+					}
+					
+					n++;
+				}
+				
+				LOG.debug("Processing time: {}ms", (System.currentTimeMillis() - t));
+				LOG.debug("Games found: {} (positions={})", n, p);
+			}
+			catch (Exception e)
+			{
+				LOG.error(e.getMessage());
+			}
 		}
 		catch (Exception e)
 		{
 			LOG.error(e.getMessage());
 		}
 		
-		return game;
-	}
-	
-	@Override
-	public List<Game> findGamesByPlayerName(String name)
-	{
-		List<Game> games = new ArrayList<>();
-		
-		try
-		{
-			games = getJdbcTemplate().query(new StringBuilder()
-    		    .append("SELECT id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
-				.append("FROM GAMES WHERE white='").append(name).append("' OR black='").append(name).append("'").toString(),
-			    Factory.Persistence.Game.getRowMapper());
-		}
-		catch (Exception e)
-		{
-			LOG.error(e.getMessage());
-		}
-		
-		return games;
-	}
-
-	@Override
-	public List<Game> findGamesBySource(String source)
-	{
-		List<Game> games = new ArrayList<>();
-		
-		try
-		{
-			games = getJdbcTemplate().query(new StringBuilder()
-			    .append("SELECT g.id,source_id,white,white_elo,black,black_elo,event,site,event_date,time_control,round,game_date,result,eco,fen,move_count,moves ")
-				.append("FROM GAMES g, SOURCES s WHERE g.source_id=s.id AND s.name='").append(source).append("'").toString(),
-			    Factory.Persistence.Game.getRowMapper());
-		}
-		catch (Exception e)
-		{
-			LOG.error(e.getMessage());
-		}
-		
-		return games;
-	}
-
-	@Override
-	public Number persistGame(Game g) 
-	{
-		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("GAMES").usingGeneratedKeyColumns("ID");
-		Map<String,Object> params = new HashMap<>();
-		params.put("SOURCE_ID", g.getSourceId());
-		params.put("WHITE", g.getWhite());
-		params.put("WHITE_ELO", g.getWhiteELO());
-		params.put("BLACK", g.getBlack());
-		params.put("BLACK_ELO", g.getBlackELO());
-		params.put("EVENT", g.getEvent());
-		params.put("SITE", g.getSite());
-		params.put("EVENT_DATE", g.getEventDate());
-		params.put("TIME_CONTROL", g.getTimeControl());
-		params.put("ROUND", g.getRound());
-		params.put("GAME_DATE", g.getDate());
-		params.put("RESULT", g.getResult());
-		params.put("ECO", g.getECO());
-		params.put("FEN", g.getFEN());
-		params.put("MOVE_COUNT", g.getMoveCount());
-		params.put("MOVES", g.getMoves());
-		
-		return s.executeAndReturnKey(params);
+		return n;
 	}
 }

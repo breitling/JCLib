@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import com.breitling.jclib.chess.Board;
 import com.breitling.jclib.chess.Color;
 import com.breitling.jclib.chess.Result;
+import com.breitling.jclib.model.DataSource;
 import com.breitling.jclib.model.Game;
-import com.breitling.jclib.model.Source;
 import com.breitling.jclib.util.Factory;
 
 @Service
@@ -57,7 +57,23 @@ public class PGNReaderImpl implements PGNReader
         tokens = moves.split(" ");
     }
     
-    public PGNReaderImpl(Source source) throws PGNException
+    public PGNReaderImpl(String name, String path) throws PGNException
+    {
+//    	this();
+//
+//    	Source source = Factory.Model.Source.create(name, path);
+//    	
+//    	try
+//    	{
+//    		this.sourcePath = FileSystems.getDefault().getPath(source.getPath());
+//    	}
+//    	catch (InvalidPathException e)
+//    	{
+//    		throw new PGNException(new StringBuilder("Bad source: ").append(e.getMessage()).toString());
+//    	}
+    }
+    
+    public PGNReaderImpl(DataSource source) throws PGNException
     {
     	this();
     	
@@ -212,7 +228,7 @@ public class PGNReaderImpl implements PGNReader
     	
     	if (pos < lines.size())
     	{
-	    	g = Factory.Model.Game.create();
+	    	g = new Game(); //Factory.Model.Game.create();
 	    	
 	    	while (lines.get(pos).matches("^\\[.*]$"))
 	    		parseHeader(g, lines.get(pos++));

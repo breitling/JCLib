@@ -1,161 +1,52 @@
 package com.breitling.jclib.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import javax.sql.DataSource;
-
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.common.mapper.JacksonMapperModule;
+import org.dizitart.no2.filters.FluentFilter;
+import org.dizitart.no2.repository.Cursor;
+import org.dizitart.no2.repository.ObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
-import com.breitling.jclib.persistence.Position;
-import com.breitling.jclib.util.DAOUtils;
-import com.breitling.jclib.util.Factory;
+import com.breitling.jclib.model.Position;
 
-public class PositionDAOImpl extends GenericDAO implements PositionDAO
+@Component
+public class PositionDAOImpl extends CrudNitriteRepository<Position> implements PositionDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(PositionDAOImpl.class);
-
-	public PositionDAOImpl() {
-	}
 	
-	public PositionDAOImpl(DataSource source) {
-		super(source);
+	public PositionDAOImpl(String name) {
+		super(name);
 	}
 
+//  CONTRACT METHODS
+	
 	@Override
-	public Optional<Position> findById(long id)
+	public Optional<List<Position>> findByHash(long hash) 
 	{
-		Optional<Position> pos = Optional.empty();
-		
-		try
+		try (Nitrite db = Nitrite.builder().loadModule(getStoreModule()).loadModule(new JacksonMapperModule()).openOrCreate("user", "sa"))
 		{
-			List<Position> list = 
-			    getJdbcTemplate().query(new StringBuilder("SELECT id,bitboardhash,fen,created FROM POSITIONS WHERE id = ").append(id).toString(),
-			                                Factory.Persistence.Position.getRowMapper());
-			if (list.size() > 0)
-				pos = Optional.of(list.get(0));
-		}
-		catch (Exception e)
-		{
-			LOG.error(e.getMessage());
-		}
-				
-		return pos;
-	}
-
-	@Override
-	public List<Position> findByHash(long hash)
-	{
-		List<Position> list = new ArrayList<>();
-		
-		try
-		{
-			list = getJdbcTemplate().query(new StringBuilder().append("SELECT id,bitboardhash,fen,created ")
-					.append("FROM POSITIONS WHERE bitboardhash=").append(hash).toString(),
-				    Factory.Persistence.Position.getRowMapper());
-		}
-		catch (Exception e)
-		{
-			LOG.error(e.getMessage());
-		}
+			ObjectRepository<Position> prepo = db.getRepository(Position.class);
 			
-		return list;
-	}
-
-	@Override
-	public Number persistPosition(Position pos)
-	{
-		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("POSITIONS").usingGeneratedKeyColumns("ID");
-		Map<String,Object> params = new HashMap<>();
-		params.put("BITBOARDHASH", pos.getBitBoardHash());
-		params.put("FEN", pos.getFen());
-		params.put("CREATED", pos.getCreated());
-		
-		return s.executeAndReturnKey(params);
-	}
-	
-	@Override
-	public long persistPositions(List<Position> positions)
-	{
-		long lastId = 0;
-		PreparedStatement batch = null;
-        ResultSet keys = null;
-        Connection conn = null;
-        
-        try
-        {
-        	conn = getDataSource().getConnection();
-        	batch = conn.prepareStatement("INSERT INTO POSITIONS (BITBOARDHASH, FEN, CREATED) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-        	
-        	for (Position p : positions)
-        	{
-        		batch.setLong(1, p.getBitBoardHash());
-        		batch.setString(2, p.getFen());
-        		batch.setDate(3, p.getCreated());
-        		batch.addBatch();
-        	}
-        	
-        	batch.executeLargeBatch();
-        	
-        	keys = batch.getGeneratedKeys();
-        	
-        	for (Position p : positions)
-        	{
-        		keys.next();
-        		lastId = keys.getLong("ID");
-        		p.setId(lastId);
-        	}
-        }
-        catch (Exception e)
-        {
-        	LOG.error(e.getMessage());
-        }
-        finally
-        {
-        	DAOUtils.closeQuietly(keys);
-        	DAOUtils.closeQuietly(batch);
-        	DAOUtils.closeQuietly(conn);
-        }
-        
-        return lastId;
-	}
-
-	@Override
-	public int count() 
-	{
-		int count = 0;
-		
-		try
-		{
-			count = getJdbcTemplate().query(new StringBuilder("SELECT count(*) AS cnt FROM POSITIONS").toString(),
-				        new ResultSetExtractor<Integer>() {
-							@Override
-							public Integer extractData(ResultSet rs) throws SQLException, DataAccessException 
-							{
-								if (rs.next())
-									return rs.getInt(1);
-								else
-									return 0;
-							}
-						});
+			Cursor<Position> cursor = prepo.find(FluentFilter.where("bitBoardHash").eq(hash));
+			var positions = StreamSupport.stream(cursor.spliterator(), false).collect(Collectors.toList());
+			
+			if (positions.size() > 0)
+				return Optional.of(positions);
+			else
+				return Optional.empty();
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			LOG.error(e.getMessage());
 		}
 		
-		return count;
+		return Optional.empty();
 	}
 }

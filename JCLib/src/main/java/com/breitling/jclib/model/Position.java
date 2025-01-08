@@ -1,21 +1,21 @@
 package com.breitling.jclib.model;
 
 import java.sql.Date;
-import java.util.Set;
 
-import com.breitling.jclib.annotation.Fetch;
-import com.breitling.jclib.util.FetchType;
-import com.breitling.jclib.util.Fetchable;
+import org.dizitart.no2.index.IndexType;
+import org.dizitart.no2.repository.annotations.Entity;
+import org.dizitart.no2.repository.annotations.Id;
+import org.dizitart.no2.repository.annotations.Index;
 
-@Fetch(type = FetchType.LAZY)
-public class Position extends Fetchable
+@Entity(value = "position", indices = {@Index (fields = "bitBoardHash", type = IndexType.NON_UNIQUE)})
+public class Position extends BaseModel
 {
+	@Id
 	private long id;
-	private long bitBoardHash;
+	
+	private Long bitBoardHash;
 	private String fen;
 	private Date created;
-	
-	private Set<Move> moves;
 	
 //  GETTERS AND SETTERS
 	
@@ -27,7 +27,7 @@ public class Position extends Fetchable
 		this.id = id;
 	}
 	
-	public long getBitBoardHash() {
+	public Long getBitBoardHash() {
 		return bitBoardHash;
 	}
 	
@@ -49,13 +49,5 @@ public class Position extends Fetchable
 	
 	public void setCreated(Date created) {
 		this.created = created;
-	}
-	
-	public Set<Move> getMoves() {
-		return this.moves;
-	}
-	
-	public void setMoves(Set<Move> moves) {
-		this.moves = moves;
 	}
 }

@@ -1,96 +1,51 @@
 package com.breitling.jclib.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import javax.sql.DataSource;
-
+import org.dizitart.no2.Nitrite;
+import org.dizitart.no2.common.mapper.JacksonMapperModule;
+import org.dizitart.no2.filters.FluentFilter;
+import org.dizitart.no2.repository.Cursor;
+import org.dizitart.no2.repository.ObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Component;
 
-import com.breitling.jclib.persistence.Position;
-import com.breitling.jclib.util.DAOUtils;
-import com.breitling.jclib.util.Factory;
+import com.breitling.jclib.model.GamePosition;
 
-public class GamePositionDAOImpl extends GenericDAO implements GamePositionDAO
+@Component
+public class GamePositionDAOImpl extends CrudNitriteRepository<GamePosition> implements GamePositionDAO
 {
 	private static Logger LOG = LoggerFactory.getLogger(GamePositionDAOImpl.class);
 	
-	public GamePositionDAOImpl() {
-	}
-	
-	public GamePositionDAOImpl(DataSource source) {
-		super(source);
+	public GamePositionDAOImpl(String name) {
+		super(name);
 	}
 
+//  CONTRACT METHODS
+	
 	@Override
-	public List<Position> findByGameId(long id) 
+	public Optional<List<GamePosition>> findByGameId(long gid)
 	{
-		List<Position> list = new ArrayList<>();
-		
-		try
+		try (Nitrite db = Nitrite.builder().loadModule(getStoreModule()).loadModule(new JacksonMapperModule()).openOrCreate("user", "sa"))
 		{
-			list = getJdbcTemplate().query(new StringBuilder().append("SELECT p.id,bitboardhash,fen,created ")
-					.append("FROM POSITIONS p, GAMEPOSITIONS gp WHERE p.id = gp.pos_id AND gp.game_id = ").append(id).toString(),
-				    Factory.Persistence.Position.getRowMapper());
+			ObjectRepository<GamePosition> repo = (ObjectRepository<GamePosition>) db.getRepository(GamePosition.class);
+			Cursor<GamePosition> cursor = repo.find(FluentFilter.where("gameId").eq(gid));
+			var list = StreamSupport.stream(cursor.spliterator(), false).collect(Collectors.toList());
+			
+			if (list.size() > 0)
+				return Optional.of(list);
+			else
+				return Optional.empty();
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
 			LOG.error(e.getMessage());
 		}
-			
-		return list;
-	}
-
-	@Override
-	public Number persistRecord(Long gameId, Long posId) 
-	{
-		SimpleJdbcInsert s = new SimpleJdbcInsert(getDataSource()).withTableName("GAMEPOSITIONS").usingGeneratedKeyColumns("ID");
-		Map<String,Long> params = new HashMap<>();
-		params.put("GAME_ID", gameId);
-		params.put("POS_ID", posId);
 		
-		return s.executeAndReturnKey(params);
-	}
-
-	@Override
-	public long persistRecords(Long gameId, List<Position> positions) 
-	{
-		long count = 0;
-		PreparedStatement batch = null;
-		Connection conn = null;
-		
-        try
-        {
-        	conn = getDataSource().getConnection();
-        	batch = conn.prepareStatement("INSERT INTO GAMEPOSITIONS (GAME_ID, POS_ID) VALUES(?, ?)");
-        	
-        	for (Position p : positions)
-        	{
-        		batch.setLong(1, gameId);
-        		batch.setLong(2, p.getId());
-        		batch.addBatch();
-        	}
-        
-        	var r = batch.executeLargeBatch();
-        	
-        	count = r.length;
-        }
-        catch (Exception e)
-        {
-        	LOG.error(e.getMessage());
-        }
-        finally
-        {
-        	DAOUtils.closeQuietly(batch);
-        	DAOUtils.closeQuietly(conn);
-        }
-        
-        return count;
+		return Optional.empty();
 	}
 }

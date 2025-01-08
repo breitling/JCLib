@@ -1,18 +1,11 @@
 package com.breitling.jclib.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.PathResource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,31 +16,14 @@ import com.breitling.jclib.util.Factory;
 @ActiveProfiles("test")
 public class NoteDAOTests 
 {
-	private NoteDAO dao;
-	
 	@Autowired
-    @SuppressWarnings("unused")
-    private DatabaseDAO dbDao;
-    
-    private static boolean initialized = false;
-    
-	@BeforeEach
-	public void setupForTest() throws SQLException
-	{
-		dao = (NoteDAO) Factory.DAO.createDAO(NoteDAOImpl.class, "notes", Factory.DAO.INMEMORY);
-		
-		if (!initialized)
-		{
-			Connection conn = ((GenericDAO) dao).getDataSource().getConnection();
-			ScriptUtils.executeSqlScript(conn, new PathResource(Paths.get("./src/test/datasets/notes.sql")));
-			initialized = true;
-		}
-	}
+	private NoteDAO dao;
+
 	@Test
-	public void testPersistNote_String_Object()
+	public void testSave_String_Object()
 	{
-		var id = dao.persistNote(0, "This is it.");
+		var r = dao.save(Factory.Model.Note.create(1L, "This is it."));
 		
-		assertEquals(1, id.longValue());
+		assertTrue(r);
 	}
 }
